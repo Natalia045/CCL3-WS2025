@@ -12,31 +12,58 @@ import com.example.nomoosugar.ui.SugarViewModel
 fun AddScreen(nav: NavController, vm: SugarViewModel) {
     var label by remember { mutableStateOf("") }
     var grams by remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") } // For search bar
 
     Column(Modifier.padding(16.dp)) {
-        Text("Quick Add")
+        Text("Quick Add", style = MaterialTheme.typography.titleMedium)
 
-        Row {
+        Spacer(Modifier.height(8.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = { vm.addSugar("Coffee", 5f); nav.popBackStack() }) { Text("Coffee 5g") }
-            Spacer(Modifier.width(8.dp))
             Button(onClick = { vm.addSugar("Fruit", 10f); nav.popBackStack() }) { Text("Fruit 10g") }
         }
 
-        Row {
+        Spacer(Modifier.height(8.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = { vm.addSugar("Snack", 15f); nav.popBackStack() }) { Text("Snack 15g") }
-            Spacer(Modifier.width(8.dp))
             Button(onClick = { vm.addSugar("Soda", 35f); nav.popBackStack() }) { Text("Soda 35g") }
         }
 
         Spacer(Modifier.height(16.dp))
 
-        OutlinedTextField(grams, { grams = it }, label = { Text("Sugar (g)") })
-        OutlinedTextField(label, { label = it }, label = { Text("Label") })
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            label = { Text("Search (placeholder)") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        Button(onClick = {
-            vm.addSugar(label, grams.toFloat())
-            nav.popBackStack()
-        }) {
+        Spacer(Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = grams,
+            onValueChange = { grams = it },
+            label = { Text("Sugar (g)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(8.dp))
+        OutlinedTextField(
+            value = label,
+            onValueChange = { label = it },
+            label = { Text("Label") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(Modifier.height(8.dp))
+        Button(
+            onClick = {
+                if (grams.isNotEmpty()) {
+                    vm.addSugar(label, grams.toFloat())
+                    nav.popBackStack()
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Add")
         }
     }
