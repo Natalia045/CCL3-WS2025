@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -20,6 +21,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.nomoosugar.ui.SugarViewModel
+import com.example.nomoosugar.ui.add.AddScreen
+import com.example.nomoosugar.ui.challenges.ChallengesScreen
+import com.example.nomoosugar.ui.home.HomeScreen
+import com.example.nomoosugar.ui.profile.SettingsScreen
 
 enum class Routes(val route: String) {
     Home("home"),
@@ -30,6 +36,7 @@ enum class Routes(val route: String) {
 @Composable
 fun NoMooSugarNavigation() {
     val navController = rememberNavController()
+    val viewModel: SugarViewModel = viewModel()
 
     Scaffold(
         bottomBar = {
@@ -41,15 +48,17 @@ fun NoMooSugarNavigation() {
             startDestination = Routes.Home.route,
             modifier = Modifier.padding(paddingValues)
         ) {
-            // Routes commented out for now - replace Text with your actual Screens
             composable(Routes.Home.route) {
-                Text(text = "Home Screen")
+                HomeScreen(nav = navController, vm = viewModel)
             }
             composable(Routes.Challenges.route) {
-                Text(text = "Challenges Screen")
+                ChallengesScreen(navController = navController)
             }
             composable(Routes.Profile.route) {
-                Text(text = "Profile Screen")
+                SettingsScreen(nav = navController, vm = viewModel)
+            }
+            composable("add") {
+                AddScreen(nav = navController, vm = viewModel)
             }
         }
     }
