@@ -1,3 +1,4 @@
+/*
 package com.example.nomoosugar.navigation
 
 import androidx.compose.runtime.*
@@ -19,3 +20,4 @@ fun AppNav() {
         composable("settings") { SettingsScreen(nav, vm) }
     }
 }
+*/
