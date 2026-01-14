@@ -1,10 +1,15 @@
 package com.example.nomoosugar.ui.challenges
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -13,100 +18,284 @@ fun ChallengesScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        // Header
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            /* Icon Placeholder */
-            Spacer(Modifier.width(8.dp))
-            Text("Challenges")
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        ) {
+            Text(
+                text = "You are doing great!",
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
         }
 
-        Spacer(Modifier.height(8.dp))
-        Text("You are doing great!")
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(Modifier.height(16.dp))
-        // Total Points
-        Card(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "Complete challenges to earn moo-points!",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            )
+        ) {
             Row(
                 modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("TOTAL MOO-POINTS")
-                    Text("0") // Placeholder
+                    Text(
+                        text = "TOTAL MOO-POINTS",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "164",
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 }
-                /* Trophy Icon Placeholder */
+                Icon(
+                    Icons.Default.EmojiEvents,
+                    contentDescription = "Trophy",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(48.dp)
+                )
             }
         }
 
-        Spacer(Modifier.height(16.dp))
-        // Active Challenges
-        Text("Active Challenges")
-        Spacer(Modifier.height(8.dp))
-        repeat(2) { // Placeholder items
-            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        /* Challenge Icon Placeholder */
-                        Spacer(Modifier.width(8.dp))
-                        Column {
-                            Text("Challenge Title")
-                            Text("Challenge Description")
-                        }
-                    }
-                    Spacer(Modifier.height(8.dp))
-                    LinearProgressIndicator(progress = 0.5f)
-                    Text("50%")
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Active Challenges",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        ChallengeCard(
+            icon = Icons.Default.Bolt,
+            title = "Sugar-Free Streak",
+            description = "Stay under your goal for 7 days",
+            progress = 0.75f,
+            progressText = "5/7 days"
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Try New Out Challenges",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        NewChallengeCard(
+            icon = Icons.Default.Star,
+            title = "Weekend Warrior",
+            description = "Keep it low on weekends",
+            onStartClick = { }
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Completed",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        CompletedChallengeCard(
+            icon = Icons.Default.Favorite,
+            title = "First Week",
+            description = "Complete your first week"
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        CompletedChallengeCard(
+            icon = Icons.Default.TrackChanges,
+            title = "Goal Seeker",
+            description = "Set your daily sugar goal"
+        )
+    }
+}
+
+@Composable
+fun ChallengeCard(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    description: String,
+    progress: Float,
+    progressText: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
-        }
 
-        Spacer(Modifier.height(16.dp))
-        // New Challenges
-        Text("Try New Challenges")
-        Spacer(Modifier.height(8.dp))
-        repeat(2) {
-            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                Row(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        /* Challenge Icon Placeholder */
-                        Spacer(Modifier.width(8.dp))
-                        Column {
-                            Text("New Challenge")
-                            Text("Description")
-                        }
-                    }
-                    Button(onClick = {}) {
-                        Text("Start")
-                    }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = progressText,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+fun NewChallengeCard(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    description: String,
+    onStartClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
+            Button(
+                onClick = onStartClick,
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text("Start")
+            }
         }
+    }
+}
 
-        Spacer(Modifier.height(16.dp))
-        // Completed Challenges
-        Text("Completed")
-        Spacer(Modifier.height(8.dp))
-        repeat(2) {
-            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(12.dp)) {
-                    /* Challenge Icon Placeholder */
-                    Spacer(Modifier.width(8.dp))
-                    Column {
-                        Text("Completed Challenge")
-                        Text("Description")
-                    }
-                }
+@Composable
+fun CompletedChallengeCard(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    description: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }

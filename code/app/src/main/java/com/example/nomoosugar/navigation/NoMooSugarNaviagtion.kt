@@ -3,16 +3,22 @@ package com.example.nomoosugar.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -25,20 +31,41 @@ import com.example.nomoosugar.ui.SugarViewModel
 import com.example.nomoosugar.ui.add.AddScreen
 import com.example.nomoosugar.ui.challenges.ChallengesScreen
 import com.example.nomoosugar.ui.home.HomeScreen
-import com.example.nomoosugar.ui.profile.SettingsScreen
+import com.example.nomoosugar.ui.profile.ProfileScreen
 
 enum class Routes(val route: String) {
     Home("home"),
     Challenges("challenges"),
-    Profile("profile")
+    Profile("profile"),
+    Add("add")
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoMooSugarNavigation() {
     val navController = rememberNavController()
     val viewModel: SugarViewModel = viewModel()
 
     Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = getTitleForRoute(navController),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    Text("🐄", style = MaterialTheme.typography.headlineMedium)
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
+            )
+        },
         bottomBar = {
             BottomNavigationBar(navController = navController)
         }
@@ -55,12 +82,24 @@ fun NoMooSugarNavigation() {
                 ChallengesScreen(navController = navController)
             }
             composable(Routes.Profile.route) {
-                SettingsScreen(nav = navController, vm = viewModel)
+                ProfileScreen(nav = navController, vm = viewModel)
             }
-            composable("add") {
+            composable(Routes.Add.route) {
                 AddScreen(nav = navController, vm = viewModel)
             }
         }
+    }
+}
+
+@Composable
+fun getTitleForRoute(navController: NavHostController): String {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    return when (navBackStackEntry?.destination?.route) {
+        Routes.Home.route -> "Home"
+        Routes.Challenges.route -> "Challenges"
+        Routes.Profile.route -> "Profile"
+        Routes.Add.route -> "Add Sugar"
+        else -> "NoMooSugar"
     }
 }
 
@@ -70,7 +109,6 @@ fun BottomNavigationBar(navController: NavHostController) {
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar {
-        // Helper list to make the code cleaner
         val items = listOf(
             Triple(Routes.Home, "Home", Icons.Filled.Home),
             Triple(Routes.Challenges, "Challenges", Icons.Filled.EmojiEvents),
@@ -84,16 +122,10 @@ fun BottomNavigationBar(navController: NavHostController) {
                 selected = currentDestination?.hierarchy?.any { it.route == route.route } == true,
                 onClick = {
                     navController.navigate(route.route) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
-                        // Avoid multiple copies of the same destination when
-                        // re-selecting the same item
                         launchSingleTop = true
-                        // Restore state when re-selecting a previously selected item
                         restoreState = true
                     }
                 }
