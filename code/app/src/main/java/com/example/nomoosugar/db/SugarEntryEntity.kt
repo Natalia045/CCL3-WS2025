@@ -9,4 +9,5 @@ data class SugarEntryEntity(
     val amount: Double,
     val timestamp: Long,
     val foodId: Long? = null,
+    val label: String? = null,
 )

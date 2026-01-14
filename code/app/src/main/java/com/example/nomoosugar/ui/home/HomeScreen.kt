@@ -1,25 +1,35 @@
 package com.example.nomoosugar.ui.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.nomoosugar.ui.SugarViewModel
+import com.example.nomoosugar.ui.AppViewModelProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(nav: NavController, vm: SugarViewModel) {
-    val total = vm.total()
-    val goal = vm.dailyGoal.value
-    val progress = if (goal > 0) (total / goal).coerceAtMost(1f) else 0f
+fun HomeScreen(nav: NavController) {
+    val viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    
+    val dailyGoal by viewModel.dailyGoal.collectAsState()
+    val todayTotal by viewModel.todayTotal.collectAsState(initial = 0f)
+    val todayEntries by viewModel.todayEntriesList.collectAsState(initial = emptyList())
+
+    val progress = if (dailyGoal > 0) (todayTotal / dailyGoal).coerceAtMost(1f) else 0f
+    val isOverLimit = todayTotal > dailyGoal
+    val progressColor = if (isOverLimit) Color(0xFFD32F2F) else MaterialTheme.colorScheme.primary
 
     Scaffold(
         floatingActionButton = {
@@ -49,7 +59,7 @@ fun HomeScreen(nav: NavController, vm: SugarViewModel) {
                     progress = { progress },
                     modifier = Modifier.fillMaxSize(0.9f),
                     strokeWidth = 16.dp,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = progressColor,
                     trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
 
@@ -60,10 +70,20 @@ fun HomeScreen(nav: NavController, vm: SugarViewModel) {
                     Text("🐄", style = MaterialTheme.typography.displayMedium)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "${String.format("%.2f", total)} g / ${goal.toInt()}g",
+                        text = "${String.format("%.2f", todayTotal)} g / ${dailyGoal.toInt()}g",
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = if (isOverLimit) Color(0xFFD32F2F) else MaterialTheme.colorScheme.onBackground
                     )
+                    if (isOverLimit) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Over limit!",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color(0xFFD32F2F),
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
 
@@ -78,7 +98,7 @@ fun HomeScreen(nav: NavController, vm: SugarViewModel) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (vm.today.isEmpty()) {
+            if (todayEntries.isEmpty()) {
                 Text(
                     text = "No entries yet. Tap + to add your first entry!",
                     style = MaterialTheme.typography.bodyMedium,
@@ -89,9 +109,11 @@ fun HomeScreen(nav: NavController, vm: SugarViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    vm.today.forEach { item ->
+                    todayEntries.forEach { item ->
                         Card(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { nav.navigate("edit/${item.id}") },
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceVariant
                             )

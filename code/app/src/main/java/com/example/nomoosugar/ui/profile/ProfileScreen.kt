@@ -12,12 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.nomoosugar.ui.SugarViewModel
+import com.example.nomoosugar.ui.AppViewModelProvider
+import com.example.nomoosugar.ui.home.HomeViewModel
 
 @Composable
-fun ProfileScreen(nav: NavController, vm: SugarViewModel) {
-    var goal by remember { mutableStateOf(vm.dailyGoal.value) }
+fun ProfileScreen(nav: NavController) {
+    val viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val dailyGoal by viewModel.dailyGoal.collectAsState()
+    var goal by remember { mutableStateOf(dailyGoal) }
 
     Column(
         modifier = Modifier
@@ -163,7 +169,7 @@ fun ProfileScreen(nav: NavController, vm: SugarViewModel) {
                         value = goal,
                         onValueChange = { newValue ->
                             goal = newValue
-                            vm.dailyGoal.value = newValue
+                            viewModel.setDailyGoal(newValue)
                         },
                         valueRange = 10f..200f,
                         steps = 38,

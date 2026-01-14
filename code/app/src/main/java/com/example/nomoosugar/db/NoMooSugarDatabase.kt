@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
     entities = [
         SugarEntryEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 abstract class NoMooSugarDatabase : RoomDatabase() {

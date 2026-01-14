@@ -11,11 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.nomoosugar.ui.SugarViewModel
+import com.example.nomoosugar.ui.AppViewModelProvider
 
 @Composable
-fun AddScreen(nav: NavController, vm: SugarViewModel) {
+fun AddScreen(nav: NavController) {
+    val viewModel: AddViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    
     var label by remember { mutableStateOf("Food") }
     var grams by remember { mutableStateOf("0") }
     var searchQuery by remember { mutableStateOf("") }
@@ -26,137 +29,137 @@ fun AddScreen(nav: NavController, vm: SugarViewModel) {
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            ) {
-                Text(
-                    text = "What did you eat today?",
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        ) {
             Text(
-                text = "Quick Add",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                text = "What did you eat today?",
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
             )
+        }
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                QuickAddButton(
-                    text = "Coffee 5g",
-                    onClick = {
-                        vm.addSugar("Coffee", 5f)
-                        nav.popBackStack()
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-                QuickAddButton(
-                    text = "Fruit 10g",
-                    onClick = {
-                        vm.addSugar("Fruit", 10f)
-                        nav.popBackStack()
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-            }
+        Text(
+            text = "Quick Add",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
 
-            Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                QuickAddButton(
-                    text = "Snack 15g",
-                    onClick = {
-                        vm.addSugar("Snack", 15f)
-                        nav.popBackStack()
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-                QuickAddButton(
-                    text = "Soda 35g",
-                    onClick = {
-                        vm.addSugar("Soda", 35f)
-                        nav.popBackStack()
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                label = { Text("Search Food or Drink") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = false,
-                readOnly = true
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = "Custom Entry",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = grams,
-                onValueChange = { grams = it },
-                label = { Text("Sugar (g)") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            OutlinedTextField(
-                value = label,
-                onValueChange = { label = it },
-                label = { Text("Label") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            QuickAddButton(
+                text = "Coffee 5g",
                 onClick = {
-                    val gramsValue = grams.toFloatOrNull() ?: 0f
-                    if (gramsValue > 0) {
-                        vm.addSugar(label.ifEmpty { "Food" }, gramsValue)
-                        nav.popBackStack()
-                    }
+                    viewModel.addSugarEntry("Coffee", 5.0)
+                    nav.popBackStack()
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Add",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                modifier = Modifier.weight(1f)
+            )
+            QuickAddButton(
+                text = "Fruit 10g",
+                onClick = {
+                    viewModel.addSugarEntry("Fruit", 10.0)
+                    nav.popBackStack()
+                },
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            QuickAddButton(
+                text = "Snack 15g",
+                onClick = {
+                    viewModel.addSugarEntry("Snack", 15.0)
+                    nav.popBackStack()
+                },
+                modifier = Modifier.weight(1f)
+            )
+            QuickAddButton(
+                text = "Soda 35g",
+                onClick = {
+                    viewModel.addSugarEntry("Soda", 35.0)
+                    nav.popBackStack()
+                },
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            label = { Text("Search Food or Drink") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = false,
+            readOnly = true
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Custom Entry",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = grams,
+            onValueChange = { grams = it },
+            label = { Text("Sugar (g)") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = label,
+            onValueChange = { label = it },
+            label = { Text("Label") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = {
+                val gramsValue = grams.toDoubleOrNull() ?: 0.0
+                if (gramsValue > 0) {
+                    viewModel.addSugarEntry(label.ifEmpty { "Food" }, gramsValue)
+                    nav.popBackStack()
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(
+                text = "Add",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 

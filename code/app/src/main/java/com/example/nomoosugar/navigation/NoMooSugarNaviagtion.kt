@@ -3,11 +3,13 @@ package com.example.nomoosugar.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -19,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -27,9 +28,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.nomoosugar.ui.SugarViewModel
+import androidx.navigation.navArgument
 import com.example.nomoosugar.ui.add.AddScreen
 import com.example.nomoosugar.ui.challenges.ChallengesScreen
+import com.example.nomoosugar.ui.edit.EditScreen
 import com.example.nomoosugar.ui.home.HomeScreen
 import com.example.nomoosugar.ui.profile.ProfileScreen
 
@@ -37,14 +39,16 @@ enum class Routes(val route: String) {
     Home("home"),
     Challenges("challenges"),
     Profile("profile"),
-    Add("add")
+    Add("add"),
+    Edit("edit/{entryId}")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoMooSugarNavigation() {
     val navController = rememberNavController()
-    val viewModel: SugarViewModel = viewModel()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
         topBar = {
@@ -59,6 +63,17 @@ fun NoMooSugarNavigation() {
                 navigationIcon = {
                     Text("🐄", style = MaterialTheme.typography.headlineMedium)
                 },
+                actions = {
+                    if (currentRoute == Routes.Add.route) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Close",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White,
@@ -67,7 +82,9 @@ fun NoMooSugarNavigation() {
             )
         },
         bottomBar = {
-            BottomNavigationBar(navController = navController)
+            if (currentRoute != Routes.Add.route) {
+                BottomNavigationBar(navController = navController)
+            }
         }
     ) { paddingValues ->
         NavHost(
@@ -76,16 +93,23 @@ fun NoMooSugarNavigation() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Routes.Home.route) {
-                HomeScreen(nav = navController, vm = viewModel)
+                HomeScreen(nav = navController)
             }
             composable(Routes.Challenges.route) {
                 ChallengesScreen(navController = navController)
             }
             composable(Routes.Profile.route) {
-                ProfileScreen(nav = navController, vm = viewModel)
+                ProfileScreen(nav = navController)
             }
             composable(Routes.Add.route) {
-                AddScreen(nav = navController, vm = viewModel)
+                AddScreen(nav = navController)
+            }
+            composable(
+                route = Routes.Edit.route,
+                arguments = listOf(navArgument("entryId") { type = androidx.navigation.NavType.LongType })
+            ) { backStackEntry ->
+                val entryId = backStackEntry.arguments?.getLong("entryId") ?: 0L
+                EditScreen(nav = navController, entryId = entryId)
             }
         }
     }
