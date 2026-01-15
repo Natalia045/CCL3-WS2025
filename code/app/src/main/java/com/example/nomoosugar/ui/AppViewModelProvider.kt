@@ -18,7 +18,7 @@ object AppViewModelProvider {
                     HomeViewModel(application.sugarRepository) as T
                 }
                 modelClass.isAssignableFrom(AddViewModel::class.java) -> {
-                    AddViewModel(application.sugarRepository) as T
+                    AddViewModel(application.sugarRepository, application.foodRepository) as T
                 }
                 else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

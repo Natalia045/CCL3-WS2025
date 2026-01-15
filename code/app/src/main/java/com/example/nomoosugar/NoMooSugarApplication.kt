@@ -2,8 +2,14 @@ package com.example.nomoosugar
 
 import android.app.Application
 import androidx.room.Room
+import com.example.nomoosugar.db.FoodEntity
 import com.example.nomoosugar.db.NoMooSugarDatabase
+import com.example.nomoosugar.repository.FoodRepository
 import com.example.nomoosugar.repository.SugarRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONArray
 
 class NoMooSugarApplication : Application() {
     val database: NoMooSugarDatabase by lazy {
@@ -14,9 +20,34 @@ class NoMooSugarApplication : Application() {
         )
             .fallbackToDestructiveMigration()
             .build()
+            .also { db ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    if (db.foodDao().getCount() == 0) {
+                        val jsonString = applicationContext.assets.open("foods.json").bufferedReader().use { it.readText() }
+                        val jsonArray = JSONArray(jsonString)
+                        val foods = mutableListOf<FoodEntity>()
+                        
+                        for (i in 0 until jsonArray.length()) {
+                            val jsonObject = jsonArray.getJSONObject(i)
+                            foods.add(
+                                FoodEntity(
+                                    name = jsonObject.getString("name"),
+                                    sugarAmount = jsonObject.getDouble("sugarAmount")
+                                )
+                            )
+                        }
+                        
+                        db.foodDao().insertAll(foods)
+                    }
+                }
+            }
     }
 
     val sugarRepository: SugarRepository by lazy {
         SugarRepository(database.sugarEntryDao())
+    }
+
+    val foodRepository: FoodRepository by lazy {
+        FoodRepository(database.foodDao())
     }
 }

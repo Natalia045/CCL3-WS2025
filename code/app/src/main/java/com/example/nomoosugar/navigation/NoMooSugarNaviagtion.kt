@@ -64,13 +64,30 @@ fun NoMooSugarNavigation() {
                     Text("🐄", style = MaterialTheme.typography.headlineMedium)
                 },
                 actions = {
-                    if (currentRoute == Routes.Add.route) {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(
-                                imageVector = Icons.Filled.Close,
-                                contentDescription = "Close",
-                                tint = Color.White
-                            )
+                    when {
+                        currentRoute == Routes.Add.route -> {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Close,
+                                    contentDescription = "Close",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                        currentRoute?.startsWith("edit/") == true -> {
+                            IconButton(
+                                onClick = {
+                                    navController.currentBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("requestDiscard", true)
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Close,
+                                    contentDescription = "Close",
+                                    tint = Color.White
+                                )
+                            }
                         }
                     }
                 },
@@ -118,12 +135,13 @@ fun NoMooSugarNavigation() {
 @Composable
 fun getTitleForRoute(navController: NavHostController): String {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    return when (navBackStackEntry?.destination?.route) {
+    val route = navBackStackEntry?.destination?.route ?: return "NoMooSugar"
+    return when (route) {
         Routes.Home.route -> "Home"
         Routes.Challenges.route -> "Challenges"
         Routes.Profile.route -> "Profile"
         Routes.Add.route -> "Add Sugar"
-        else -> "NoMooSugar"
+        else -> if (route.startsWith("edit/")) "Edit Entry" else "NoMooSugar"
     }
 }
 

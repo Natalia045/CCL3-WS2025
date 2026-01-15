@@ -6,10 +6,12 @@ import androidx.room.RoomDatabase
 @Database(
     entities = [
         SugarEntryEntity::class,
+        FoodEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = false,
 )
 abstract class NoMooSugarDatabase : RoomDatabase() {
     abstract fun sugarEntryDao(): SugarEntryDao
+    abstract fun foodDao(): FoodDao
 }

@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -113,11 +112,11 @@ class EditViewModel(
         }
     }
 
-    fun requestDiscard() {
+    fun handleClose(onDone: () -> Unit) {
         if (_uiState.value.isDirty) {
             _uiState.value = _uiState.value.copy(showDiscardDialog = true)
         } else {
-            _uiState.value = _uiState.value.copy(showDiscardDialog = false)
+            onDone()
         }
     }
 
