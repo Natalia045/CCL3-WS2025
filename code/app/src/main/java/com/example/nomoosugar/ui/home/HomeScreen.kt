@@ -22,10 +22,13 @@ import com.example.nomoosugar.ui.AppViewModelProvider
 @Composable
 fun HomeScreen(nav: NavController) {
     val viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    
-    val dailyGoal by viewModel.dailyGoal.collectAsState()
-    val todayTotal by viewModel.todayTotal.collectAsState(initial = 0f)
-    val todayEntries by viewModel.todayEntriesList.collectAsState(initial = emptyList())
+    // 1. Observe the combined uiState
+    val uiState by viewModel.uiState.collectAsState()
+
+    // 2. Access values directly from uiState
+    val dailyGoal = uiState.dailySugarLimit
+    val todayTotal = uiState.todayTotalSugar
+    val todayEntries = uiState.todayEntries
 
     val progress = if (dailyGoal > 0) (todayTotal / dailyGoal).coerceAtMost(1f) else 0f
     val isOverLimit = todayTotal > dailyGoal
@@ -70,6 +73,7 @@ fun HomeScreen(nav: NavController) {
                     Text("🐄", style = MaterialTheme.typography.displayMedium)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
+                        // Use dailyGoal from uiState
                         text = "${String.format("%.2f", todayTotal)} g / ${dailyGoal.toInt()}g",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -90,7 +94,7 @@ fun HomeScreen(nav: NavController) {
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = "Today's Intake",
+                text = "Today\'s Intake",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth()
