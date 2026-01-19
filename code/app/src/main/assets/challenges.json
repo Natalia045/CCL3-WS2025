@@ -1,0 +1,26 @@
+[
+    {
+      "challengeType": 1,
+      "title": "Sugar-Free Streak",
+      "description": "Stay under your goal for 7 days",
+      "targetCount": 7
+    },
+    {
+      "challengeType": 2,
+      "title": "Weekend Warrior",
+      "description": "Keep it low on 3 weekends",
+      "targetCount": 3
+    },
+    {
+      "challengeType": 3,
+      "title": "First Week",
+      "description": "Complete your first week",
+      "targetCount": 7
+    },
+    {
+      "challengeType": 4,
+      "title": "Goal Seeker",
+      "description": "Set your daily sugar goal",
+      "targetCount": 1
+    }
+  ]

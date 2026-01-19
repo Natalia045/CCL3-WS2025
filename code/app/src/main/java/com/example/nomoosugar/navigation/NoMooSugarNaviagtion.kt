@@ -113,7 +113,7 @@ fun NoMooSugarNavigation() {
                 HomeScreen(nav = navController)
             }
             composable(Routes.Challenges.route) {
-                ChallengesScreen(navController = navController)
+                ChallengesScreen(nav = navController,)
             }
             composable(Routes.Profile.route) {
                 ProfileScreen()
