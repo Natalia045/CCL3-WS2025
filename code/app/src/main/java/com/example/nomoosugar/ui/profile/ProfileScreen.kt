@@ -6,24 +6,27 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.* // Keep this for remember, mutableStateOf, etc.
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState // Keep for collectAsState
+import androidx.compose.runtime.getValue // Keep for getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.nomoosugar.ui.AppViewModelProvider
-import com.example.nomoosugar.ui.home.HomeViewModel
 
 @Composable
-fun ProfileScreen(nav: NavController) {
-    val viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    val dailyGoal by viewModel.dailyGoal.collectAsState()
-    var goal by remember { mutableStateOf(dailyGoal) }
+fun ProfileScreen() {
+    // 1. Change ViewModel to ProfileViewModel
+    val viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    // 2. Observe the uiState from the ProfileViewModel
+    val uiState by viewModel.uiState.collectAsState()
+
+    // No need for a mutableStateOf 'goal' directly in the screen, as it comes from uiState
+    // var goal by remember { mutableStateOf(dailyGoal) } // REMOVE THIS LINE
+
 
     Column(
         modifier = Modifier
@@ -48,7 +51,8 @@ fun ProfileScreen(nav: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "John Doe",
+                    // 3. Display user's name from uiState
+                    text = uiState.name,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -58,7 +62,7 @@ fun ProfileScreen(nav: NavController) {
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { }
+                onClick = { /* TODO: Potentially navigate to an edit name screen */ }
             ) {
                 Row(
                     modifier = Modifier
@@ -86,7 +90,8 @@ fun ProfileScreen(nav: NavController) {
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "${goal.toInt()}g per day",
+                                // 4. Display daily sugar limit from uiState
+                                text = "${uiState.dailySugarLimit.toInt()}g per day",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -104,7 +109,7 @@ fun ProfileScreen(nav: NavController) {
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { }
+                onClick = { /* TODO: Potentially navigate to notifications settings */ }
             ) {
                 Row(
                     modifier = Modifier
@@ -157,7 +162,8 @@ fun ProfileScreen(nav: NavController) {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "${goal.toInt()}g",
+                        // 4. Display daily sugar limit from uiState
+                        text = "${uiState.dailySugarLimit.toInt()}g",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -166,10 +172,11 @@ fun ProfileScreen(nav: NavController) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Slider(
-                        value = goal,
+                        // 4. Bind slider value to uiState.dailySugarLimit
+                        value = uiState.dailySugarLimit,
                         onValueChange = { newValue ->
-                            goal = newValue
-                            viewModel.setDailyGoal(newValue)
+                            // 5. Call ViewModel function to update the limit
+                            viewModel.updateDailySugarLimit(newValue)
                         },
                         valueRange = 10f..200f,
                         steps = 38,

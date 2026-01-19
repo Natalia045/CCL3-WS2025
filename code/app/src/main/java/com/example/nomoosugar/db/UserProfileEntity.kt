@@ -5,9 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "user_profiles")
 data class UserProfileEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
-    val name: String,
-    val avatarUri: String? = null,
-    val dailySugarLimit: Double,
-    val notificationsEnabled: Boolean = true,
+    @PrimaryKey val id: Long = 1L, // Changed to fixed ID and not auto-generated
+    val name: String = "John Doe",
+    val dailySugarLimit: Double = 50.0,
 )

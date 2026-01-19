@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase
         ChallengeEntity::class,
         UserProfileEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false,
 )
 abstract class NoMooSugarDatabase : RoomDatabase() {
