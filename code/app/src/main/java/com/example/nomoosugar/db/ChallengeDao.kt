@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ChallengeDao {
 
-    @Query("SELECT * FROM challenges") // Removed WHERE userId = :userId
-    fun getAllChallenges(): Flow<List<ChallengeEntity>> // Removed userId parameter
+    @Query("SELECT * FROM challenges")
+    fun getAllChallenges(): Flow<List<ChallengeEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertChallenges(challenges: List<ChallengeEntity>)
@@ -22,13 +22,14 @@ interface ChallengeDao {
     suspend fun updateChallenge(challenge: ChallengeEntity)
 
     // Activates a challenge by setting isActive to true
-    @Query("UPDATE challenges SET isActive = 1 WHERE id = :id")
-    suspend fun activateChallenge(id: Int)
 
     // for the initial setup of the challenges from assets JSON file
     @Query("SELECT COUNT(*) FROM challenges")
     suspend fun getCount(): Int
 
     @Query("SELECT * FROM challenges")
-    suspend fun getAllOnce(): List<ChallengeEntity> // Removed userId parameter
+    suspend fun getAllOnce(): List<ChallengeEntity>
+
+    @Query("UPDATE challenges SET isActive = 1 WHERE id = :id")
+    suspend fun activateChallenge(id: Int)
 }

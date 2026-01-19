@@ -21,13 +21,12 @@ import com.example.nomoosugar.ui.AppViewModelProvider
 @Composable
 fun ChallengesScreen(
     nav: NavController,
-    viewModel: ChallengesViewModel = viewModel(factory = AppViewModelProvider.Factory) // Get ViewModel directly
+    viewModel: ChallengesViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    // Observe the uiState from the ViewModel
     val uiState by viewModel.uiState.collectAsState()
     val allChallenges = uiState.allChallenges
 
-    // Filter challenges for display
+    // Filter challenges based on isActive and isCompleted
     val active = allChallenges.filter { it.isActive && !it.isCompleted }
     val available = allChallenges.filter { !it.isActive && !it.isCompleted }
     val completed = allChallenges.filter { it.isCompleted }
@@ -39,8 +38,6 @@ fun ChallengesScreen(
             .padding(16.dp)
     ) {
 
-        // Removed Moo Points display as requested
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -48,7 +45,7 @@ fun ChallengesScreen(
             )
         ) {
             Text(
-                text = "Complete challenges to earn rewards 🐄", // Simplified text
+                text = "Complete challenges to earn rewards 🐄",
                 modifier = Modifier.padding(16.dp),
                 fontWeight = FontWeight.Medium
             )
@@ -76,7 +73,7 @@ fun ChallengesScreen(
         } else {
             available.forEach { challenge ->
                 AvailableChallengeCard(challenge) {
-                    viewModel.activateChallenge(challenge.id) // Call ViewModel's dummy activate function
+                    viewModel.activateChallenge(challenge.id) // Call ViewModel's activate function
                 }
                 Spacer(modifier = Modifier.height(12.dp))
             }

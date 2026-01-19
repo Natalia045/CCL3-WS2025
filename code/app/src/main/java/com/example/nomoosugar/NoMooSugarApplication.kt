@@ -60,11 +60,10 @@ class NoMooSugarApplication : Application() {
                                     title = jsonObject.getString("title"),
                                     description = jsonObject.getString("description"),
                                     targetCount = jsonObject.getInt("targetCount")
-                                    // currentCount, isActive, isCompleted, lastUpdated will use their default values
                                 )
                             )
                         }
-                        db.challengeDao().insertChallenges(challenges)
+                        challengeRepository.createInitialChallengesFromJson(challenges)
                     }
 
                     // Removed the default user creation block (as per your earlier request)
