@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.example.nomoosugar.db.FoodEntity
 import com.example.nomoosugar.db.NoMooSugarDatabase
+import com.example.nomoosugar.repository.ChallengeRepository
 import com.example.nomoosugar.repository.FoodRepository
 import com.example.nomoosugar.repository.SugarRepository
 import kotlinx.coroutines.CoroutineScope
@@ -49,5 +50,9 @@ class NoMooSugarApplication : Application() {
 
     val foodRepository: FoodRepository by lazy {
         FoodRepository(database.foodDao())
+    }
+
+    val challengeRepository: ChallengeRepository by lazy {
+        ChallengeRepository(database.challengeDao())
     }
 }

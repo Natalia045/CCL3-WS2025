@@ -1,27 +1,27 @@
 package com.example.nomoosugar.ui
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.nomoosugar.NoMooSugarApplication
 import com.example.nomoosugar.ui.add.AddViewModel
 import com.example.nomoosugar.ui.home.HomeViewModel
+import com.example.nomoosugar.ui.challenges.ChallengesViewModel
+
 
 object AppViewModelProvider {
-    val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-            val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as NoMooSugarApplication
-
-            return when {
-                modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
-                    HomeViewModel(application.sugarRepository) as T
-                }
-                modelClass.isAssignableFrom(AddViewModel::class.java) -> {
-                    AddViewModel(application.sugarRepository, application.foodRepository) as T
-                }
-                else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
-            }
+    val Factory = viewModelFactory {
+        initializer {
+            val application = this[APPLICATION_KEY] as NoMooSugarApplication
+            HomeViewModel(application.sugarRepository)
+        }
+        initializer {
+            val application = this[APPLICATION_KEY] as NoMooSugarApplication
+            AddViewModel(application.sugarRepository, application.foodRepository)
+        }
+        initializer {
+            val application = this[APPLICATION_KEY] as NoMooSugarApplication
+            ChallengesViewModel(application.challengeRepository)
         }
     }
 }
