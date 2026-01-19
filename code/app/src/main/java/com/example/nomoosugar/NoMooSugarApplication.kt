@@ -7,6 +7,7 @@ import com.example.nomoosugar.db.NoMooSugarDatabase
 import com.example.nomoosugar.repository.ChallengeRepository
 import com.example.nomoosugar.repository.FoodRepository
 import com.example.nomoosugar.repository.SugarRepository
+import com.example.nomoosugar.repository.UserProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,5 +55,9 @@ class NoMooSugarApplication : Application() {
 
     val challengeRepository: ChallengeRepository by lazy {
         ChallengeRepository(database.challengeDao())
+    }
+
+    val userProfileRepository: UserProfileRepository by lazy {
+        UserProfileRepository(database.userProfileDao())
     }
 }

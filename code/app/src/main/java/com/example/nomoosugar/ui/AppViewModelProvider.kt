@@ -7,6 +7,7 @@ import com.example.nomoosugar.NoMooSugarApplication
 import com.example.nomoosugar.ui.add.AddViewModel
 import com.example.nomoosugar.ui.home.HomeViewModel
 import com.example.nomoosugar.ui.challenges.ChallengesViewModel
+import com.example.nomoosugar.ui.profile.ProfileViewModel
 
 
 object AppViewModelProvider {
@@ -22,6 +23,11 @@ object AppViewModelProvider {
         initializer {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication
             ChallengesViewModel(application.challengeRepository)
+        }
+
+        initializer {
+            val application = this[APPLICATION_KEY] as NoMooSugarApplication
+            ProfileViewModel(application.userProfileRepository)
         }
     }
 }
