@@ -17,17 +17,17 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = FabBlue,
-    onPrimary = Color.White,
-    primaryContainer = SelectedIconBoxBlue,
-    onPrimaryContainer = AppBlack,
-    surface = Color(0xFF2C2C2C),
-    onSurface = Color.White,
-    background = Color(0xFF1C1C1C),
-    onBackground = Color.White,
-    surfaceVariant = NavBarGray,
-    onSurfaceVariant = Color.White,
-    secondary = PurpleGrey40,
+    primary = Color(0xFF64B5F6), // A vibrant light blue for selected items and accents
+    onPrimary = Color.White, // Changed for better visibility on dark primaryContainer
+    primaryContainer = Color(0xFF004C8C), // A darker blue for backgrounds that contain primary elements
+    onPrimaryContainer = Color.White, // White for text on primaryContainer
+    surface = Color(0xFF1F2A38), // Dark blue-gray for top bar and nav bar backgrounds
+    onSurface = Color(0xFFE0E0E0), // Light gray for text on surface
+    background = Color(0xFF121212), // Very dark background
+    onBackground = Color(0xFFE0E0E0), // Light gray for text on background
+    surfaceVariant = Color(0xFF37474F), // Dark blue-gray for cards and progress track
+    onSurfaceVariant = Color(0xFFE0E0E0), // Light gray for text on surfaceVariant
+    secondary = PurpleGrey40, // Keeping these as fallbacks if not explicitly used
     tertiary = Pink40
 )
 

@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.collectAsState // Keep for collectAsState
 import androidx.compose.runtime.getValue // Keep for getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,6 +35,7 @@ fun ProfileScreen() {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),

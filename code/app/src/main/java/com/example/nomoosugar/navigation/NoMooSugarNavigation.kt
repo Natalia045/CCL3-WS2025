@@ -63,7 +63,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.text.style.TextOverflow
-import com.example.nomoosugar.ui.theme.NavBarGray
 import com.example.nomoosugar.ui.theme.CloseButtonLightBlueOpacity
 import com.example.nomoosugar.ui.theme.HomeTitleBlue
 
@@ -291,7 +290,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar(containerColor = NavBarGray) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
         val items = listOf(
             Triple(Routes.Home, "Home", Icons.Filled.Home),
             Triple(Routes.Challenges, "Challenges", Icons.Filled.EmojiEvents),
