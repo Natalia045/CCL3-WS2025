@@ -29,5 +29,9 @@ object AppViewModelProvider {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication
             ProfileViewModel(application.userProfileRepository)
         }
+        initializer {
+            val application = this[APPLICATION_KEY] as NoMooSugarApplication
+            com.example.nomoosugar.ui.navigation.NavigationViewModel(application)
+        }
     }
 }
