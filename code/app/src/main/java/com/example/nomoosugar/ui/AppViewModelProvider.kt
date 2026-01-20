@@ -1,5 +1,6 @@
 package com.example.nomoosugar.ui
 
+import android.app.Application
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -27,7 +28,7 @@ object AppViewModelProvider {
         }
         initializer {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication
-            ProfileViewModel(application.userProfileRepository, application.challengeRepository)
+            ProfileViewModel(application, application.userProfileRepository, application.challengeRepository)
         }
         initializer {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication

@@ -2,6 +2,8 @@ package com.example.nomoosugar
 
 import android.app.Application
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.nomoosugar.db.ChallengeEntity
 import com.example.nomoosugar.db.FoodEntity
 import com.example.nomoosugar.db.NoMooSugarDatabase
@@ -16,13 +18,19 @@ import org.json.JSONArray
 
 class NoMooSugarApplication : Application() {
 
+    private val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE user_profile ADD COLUMN notificationsEnabled INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
     val database: NoMooSugarDatabase by lazy {
         Room.databaseBuilder(
             applicationContext,
             NoMooSugarDatabase::class.java,
             "nomoo_sugar_database"
         )
-            .fallbackToDestructiveMigration()
+            .addMigrations(MIGRATION_1_2)
             .build()
     }
 
