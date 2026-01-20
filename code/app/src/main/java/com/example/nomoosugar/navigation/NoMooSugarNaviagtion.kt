@@ -59,6 +59,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.core.tween
+import androidx.compose.ui.text.style.TextOverflow
 
 // --- 1. The ViewModel ---
 // This handles the random timer and picking the random message
@@ -237,18 +238,24 @@ fun SpeechBubble(text: String) {
         color = Color.White,
         shadowElevation = 4.dp
     ) {
-        // I increased the padding slightly so the big text doesn't feel cramped
         Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            // 1. Try to resize based on length
+            val fontSize = when {
+                text.length > 25 -> 13.sp  // Very long text
+                text.length > 15 -> 16.sp  // Medium text
+                else -> 22.sp              // Short & punchy
+            }
+
             Text(
                 text = text,
                 color = Color.Black,
-                // Option A: Use a larger Theme style
-                style = MaterialTheme.typography.headlineSmall,
+                fontSize = fontSize,
+                fontWeight = FontWeight.ExtraBold,
 
-                // Option B: (Uncomment below) Set a specific size if Option A isn't big enough
-                // fontSize = 24.sp,
-
-                fontWeight = FontWeight.ExtraBold // Made it ExtraBold to pop more
+                // 2. The "Safety Net" for the worst case
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis // "What did you eat tod..."
             )
         }
     }
