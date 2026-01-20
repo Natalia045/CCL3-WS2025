@@ -2,38 +2,109 @@ package com.example.nomoosugar.repository
 
 import com.example.nomoosugar.db.ChallengeDao
 import com.example.nomoosugar.db.ChallengeEntity
-import kotlinx.coroutines.flow.Flow
+import com.example.nomoosugar.db.UserProfileEntity
+import kotlinx.coroutines.flow.firstOrNull
+import java.time.LocalDate
 
 class ChallengeRepository(
-    private val dao: ChallengeDao
+    private val dao: ChallengeDao,
+    private val userProfileRepository: UserProfileRepository
 ) {
-    // Provides a Flow of all challenges for reactive UI updates
-    fun getAllChallenges(): Flow<List<ChallengeEntity>> {
-        return dao.getAllChallenges()
-    }
 
-    // Inserts a list of challenges into the database (used for initial loading from JSON)
-    suspend fun insertChallenges(challenges: List<ChallengeEntity>) {
-        dao.insertChallenges(challenges)
-    }
+    // Returns all challenges as a Flow for UI
+    fun getAllChallenges() = dao.getAllChallenges()
 
-    // Updates a single challenge in the database
-    suspend fun updateChallenge(challenge: ChallengeEntity) {
-        dao.updateChallenge(challenge)
-    }
+    suspend fun insertChallenges(challenges: List<ChallengeEntity>) = dao.insertChallenges(challenges)
 
-    // Activates a specific challenge by its ID (delegates to DAO)
+    suspend fun updateChallenge(challenge: ChallengeEntity) = dao.updateChallenge(challenge)
+
+    suspend fun getAllOnce(): List<ChallengeEntity> = dao.getAllOnce()
+
     suspend fun activateChallenge(id: Int) {
-        dao.activateChallenge(id)
+        val challenge = dao.getAllOnce().firstOrNull { it.id == id } ?: return
+        dao.updateChallenge(
+            challenge.copy(
+                isActive = true,
+                currentCount = 0,
+                isCompleted = false,
+                lastUpdated = 0L
+            )
+        )
     }
 
-    // Fetches all challenges once (not as a Flow) for logic processing in ViewModel
-    suspend fun getAllOnce(): List<ChallengeEntity> {
-        return dao.getAllOnce()
+    /** Award points safely by updating the UserProfile in DB */
+    private suspend fun awardPoints(points: Int) {
+        val profile = userProfileRepository.getUserProfile().firstOrNull() ?: UserProfileEntity()
+        val updated = profile.copy(points = profile.points + points)
+        userProfileRepository.insertUserProfile(updated)
     }
 
-    // This function is for initial population, will be called from NoMooSugarApplication
-    suspend fun createInitialChallengesFromJson(challenges: List<ChallengeEntity>) {
-        dao.insertChallenges(challenges)
+    /** Manual entry challenge: Read the Label */
+    suspend fun updateReadTheLabelChallenge() {
+        val readLabel = dao.getChallengeByType(1) ?: return
+        if (!readLabel.isActive) return
+
+        val newCount = (readLabel.currentCount + 1).coerceAtMost(readLabel.targetCount)
+        val completed = newCount >= readLabel.targetCount
+
+        if (completed && !readLabel.isCompleted) {
+            awardPoints(20)
+        }
+        dao.updateChallenge(readLabel.copy(currentCount = newCount, isCompleted = completed))
+    }
+
+    /** Snack Smarter challenge: sugar <= 10g */
+    suspend fun updateSnackSmarterChallenge(sugarAmount: Double) {
+        val challenge = dao.getActiveChallenge(2) ?: return
+        if (sugarAmount > 10) return
+
+        val newCount = (challenge.currentCount + 1).coerceAtMost(challenge.targetCount)
+        val completed = newCount >= challenge.targetCount
+
+        if (completed && !challenge.isCompleted) {
+            awardPoints(30)
+        }
+        dao.updateChallenge(challenge.copy(currentCount = newCount, isCompleted = completed))
+    }
+
+    /** Goal Seeker: set sugar goal */
+    suspend fun updateGoalSeekerChallenge() {
+        val challenge = dao.getActiveChallenge(4) ?: return
+        if (challenge.isCompleted) return
+
+        awardPoints(10)
+        dao.updateChallenge(challenge.copy(currentCount = 1, isCompleted = true))
+    }
+
+    /** Sugar streak (type 3) */
+    suspend fun updateSugarStreakChallenge(logDate: LocalDate) {
+        val challenge = dao.getActiveChallenge(3) ?: return
+        if (challenge.isCompleted) return
+        if (challenge.lastUpdated == 0L) {
+            dao.updateChallenge(challenge.copy(currentCount = 1, lastUpdated = logDate.toEpochDay()))
+            return
+        }
+
+        val lastUpdate = LocalDate.ofEpochDay(challenge.lastUpdated)
+        val today = logDate
+
+        when {
+            lastUpdate.plusDays(1) == today -> {
+                val newCount = (challenge.currentCount + 1).coerceAtMost(challenge.targetCount)
+                val completed = newCount >= challenge.targetCount
+
+                if (completed && !challenge.isCompleted) {
+                    awardPoints(30)
+                }
+
+                dao.updateChallenge(challenge.copy(
+                    currentCount = newCount,
+                    isCompleted = completed,
+                    lastUpdated = today.toEpochDay()
+                ))
+            }
+            lastUpdate == today -> {} // do nothing
+            else -> dao.updateChallenge(challenge.copy(currentCount = 1, lastUpdated = today.toEpochDay()))
+        }
     }
 }

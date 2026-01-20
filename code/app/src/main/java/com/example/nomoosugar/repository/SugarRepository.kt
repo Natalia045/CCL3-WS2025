@@ -3,35 +3,31 @@ package com.example.nomoosugar.repository
 import com.example.nomoosugar.db.SugarEntryDao
 import com.example.nomoosugar.db.SugarEntryEntity
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 
-class SugarRepository(
-    private val sugarEntryDao: SugarEntryDao,
-) {
+class SugarRepository(private val dao: SugarEntryDao) {
 
-    suspend fun addEntry(entry: SugarEntryEntity) {
-        sugarEntryDao.insert(entry)
+    suspend fun insert(entry: SugarEntryEntity) {
+        dao.insert(entry)
     }
 
-    suspend fun updateEntry(entry: SugarEntryEntity) {
-        sugarEntryDao.update(entry)
+    suspend fun update(entry: SugarEntryEntity) {
+        dao.update(entry)
     }
 
-    suspend fun deleteEntry(entry: SugarEntryEntity) {
-        sugarEntryDao.delete(entry)
+    suspend fun delete(entry: SugarEntryEntity) {
+        dao.delete(entry)
     }
 
-    fun observeEntry(id: Long): Flow<SugarEntryEntity?> {
-        return sugarEntryDao.observeById(id)
+    fun getById(id: Int): Flow<SugarEntryEntity?> {
+        return dao.getById(id)
     }
 
-    fun observeAllEntries(): Flow<List<SugarEntryEntity>> {
-        return sugarEntryDao.observeAll()
+    fun getTodayEntries(): Flow<List<SugarEntryEntity>> {
+        return dao.getEntriesForDate(LocalDate.now().toEpochDay())
     }
 
-    fun observeEntriesBetween(
-        startTimestamp: Long,
-        endTimestamp: Long,
-    ): Flow<List<SugarEntryEntity>> {
-        return sugarEntryDao.observeBetween(startTimestamp, endTimestamp)
+    fun getTodayTotalSugar(): Flow<Double?> {
+        return dao.getTotalSugarForDay(LocalDate.now().toEpochDay())
     }
 }

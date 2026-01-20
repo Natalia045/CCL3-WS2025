@@ -32,4 +32,10 @@ interface ChallengeDao {
 
     @Query("UPDATE challenges SET isActive = 1 WHERE id = :id")
     suspend fun activateChallenge(id: Int)
+
+    @Query("SELECT * FROM challenges WHERE challengeType = :type AND isActive = 1 AND isCompleted = 0 LIMIT 1")
+    suspend fun getActiveChallenge(type: Int): ChallengeEntity?
+
+    @Query("SELECT * FROM challenges WHERE challengeType = :type AND isCompleted = 0 LIMIT 1")
+    suspend fun getChallengeByType(type: Int): ChallengeEntity?
 }

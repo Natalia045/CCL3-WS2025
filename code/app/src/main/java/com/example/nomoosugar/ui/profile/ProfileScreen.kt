@@ -60,6 +60,32 @@ fun ProfileScreen() {
 
             Spacer(modifier = Modifier.height(32.dp))
 
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Points",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = "${uiState.points}",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { /* TODO: Potentially navigate to an edit name screen */ }
