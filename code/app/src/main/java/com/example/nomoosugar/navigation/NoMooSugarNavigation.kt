@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -64,7 +63,6 @@ import androidx.compose.foundation.background
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.nomoosugar.ui.theme.NavBarGray
-import com.example.nomoosugar.ui.theme.CloseButtonBackgroundGray
 import com.example.nomoosugar.ui.theme.CloseButtonLightBlueOpacity
 import com.example.nomoosugar.ui.theme.HomeTitleBlue
 
