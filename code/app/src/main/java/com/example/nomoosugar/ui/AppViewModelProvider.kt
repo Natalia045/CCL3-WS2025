@@ -31,7 +31,7 @@ object AppViewModelProvider {
         }
         initializer {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication
-            com.example.nomoosugar.ui.navigation.NavigationViewModel(application)
+            com.example.nomoosugar.navigation.NavigationViewModel()
         }
     }
 }
