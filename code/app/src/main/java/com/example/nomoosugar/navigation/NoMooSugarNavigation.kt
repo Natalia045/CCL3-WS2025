@@ -63,8 +63,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.foundation.isSystemInDarkTheme
 import com.example.nomoosugar.ui.theme.CloseButtonLightBlueOpacity
 import com.example.nomoosugar.ui.theme.HomeTitleBlue
+import com.example.nomoosugar.ui.theme.CardBackgroundBlue
 
 // --- 1. The ViewModel ---
 // This handles the random timer and picking the random message
@@ -209,7 +211,7 @@ fun NoMooSugarNavigation(
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else CardBackgroundBlue,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                     navigationIconContentColor = MaterialTheme.colorScheme.onSurface
                 )

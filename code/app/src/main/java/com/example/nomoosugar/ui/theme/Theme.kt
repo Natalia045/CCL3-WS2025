@@ -15,13 +15,16 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.nomoosugar.ui.theme.NavBarDarkGray
+import com.example.nomoosugar.ui.theme.NavBarGray
+import com.example.nomoosugar.ui.theme.CardBackgroundBlue
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFF64B5F6), // A vibrant light blue for selected items and accents
     onPrimary = Color.White, // Changed for better visibility on dark primaryContainer
     primaryContainer = Color(0xFF004C8C), // A darker blue for backgrounds that contain primary elements
     onPrimaryContainer = Color.White, // White for text on primaryContainer
-    surface = Color(0xFF1F2A38), // Dark blue-gray for top bar and nav bar backgrounds
+    surface = NavBarDarkGray, // Dark gray for top bar and nav bar backgrounds
     onSurface = Color(0xFFE0E0E0), // Light gray for text on surface
     background = Color(0xFF121212), // Very dark background
     onBackground = Color(0xFFE0E0E0), // Light gray for text on background
@@ -36,7 +39,7 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Color.White,
     primaryContainer = HomeTitleBlue,
     onPrimaryContainer = Color.White,
-    surface = CardBackgroundBlue,
+    surface = NavBarGray,
     onSurface = HomeTitleBlue,
     background = Color.White,
     onBackground = AppBlack,
@@ -68,7 +71,8 @@ fun NoMooSugarTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.surface.toArgb()
+            val statusBarColor = if (darkTheme) colorScheme.surface else CardBackgroundBlue
+            window.statusBarColor = statusBarColor.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
