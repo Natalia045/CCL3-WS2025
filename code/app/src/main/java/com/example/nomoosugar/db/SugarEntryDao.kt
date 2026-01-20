@@ -15,7 +15,7 @@ interface SugarEntryDao {
     suspend fun delete(entry: SugarEntryEntity)
 
     @Query("SELECT * FROM sugar_entries WHERE id = :id")
-    fun getById(id: Int): Flow<SugarEntryEntity?>
+    fun getById(id: Long): Flow<SugarEntryEntity?>
 
     @Query("SELECT * FROM sugar_entries WHERE timestamp = :timestamp")
     fun getEntriesForDate(timestamp: Long): Flow<List<SugarEntryEntity>>

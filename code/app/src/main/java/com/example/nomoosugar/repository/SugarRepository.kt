@@ -19,7 +19,7 @@ class SugarRepository(private val dao: SugarEntryDao) {
         dao.delete(entry)
     }
 
-    fun getById(id: Int): Flow<SugarEntryEntity?> {
+    fun getById(id: Long): Flow<SugarEntryEntity?> {
         return dao.getById(id)
     }
 

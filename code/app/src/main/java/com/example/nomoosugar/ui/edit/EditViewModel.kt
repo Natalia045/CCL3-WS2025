@@ -30,7 +30,7 @@ class EditViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val entryId: Int = savedStateHandle["entryId"] ?: 0
+    private val entryId: Long = savedStateHandle["entryId"] ?: 0L
 
     private var original: SugarEntryEntity? = null
 
@@ -38,7 +38,7 @@ class EditViewModel(
     val uiState: StateFlow<EditUiState> = _uiState.asStateFlow()
 
     init {
-        if (entryId != 0) {
+        if (entryId != 0L) {
             viewModelScope.launch {
                 repository.getById(entryId)
                     .filterNotNull()
