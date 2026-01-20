@@ -3,6 +3,7 @@ package com.example.nomoosugar.ui.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nomoosugar.db.UserProfileEntity
+import com.example.nomoosugar.repository.ChallengeRepository
 import com.example.nomoosugar.repository.UserProfileRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,11 +15,13 @@ import kotlinx.coroutines.launch
 // This data class directly holds what your ProfileScreen needs to show.
 data class ProfileUiState(
     val name: String = "Default User",       // String for displaying text in the UI
-    val dailySugarLimit: Float = 50.0f       // Float for the Slider composable in the UI
+    val dailySugarLimit: Float = 50.0f,       // Float for the Slider composable in the UI
+    val points: Int = 0
 )
 
 class ProfileViewModel(
-    private val userProfileRepository: UserProfileRepository // Dependency injected
+    private val userProfileRepository: UserProfileRepository, // Dependency injected
+    private val challengeRepository: ChallengeRepository
 ) : ViewModel() {
 
     // 1. Function/Property to get name and sugar limit from DB and expose to UI:
@@ -30,7 +33,8 @@ class ProfileViewModel(
             val currentProfile = userProfile ?: UserProfileEntity()
             ProfileUiState(
                 name = currentProfile.name,
-                dailySugarLimit = currentProfile.dailySugarLimit.toFloat() // Convert Double to Float
+                dailySugarLimit = currentProfile.dailySugarLimit.toFloat(), // Convert Double to Float
+                points = currentProfile.points
             )
         }.stateIn(
             scope = viewModelScope,
@@ -42,11 +46,29 @@ class ProfileViewModel(
     fun updateDailySugarLimit(newLimit: Float) { // Accepts Float from the UI slider
         viewModelScope.launch {
             // Get the current user profile entity from the repository (to preserve its ID and name)
-            val existingUserProfile = userProfileRepository.getUserProfile().first() ?: UserProfileEntity()
+            var existingUserProfile = userProfileRepository.getUserProfile().first() ?: UserProfileEntity()
             // Create an updated entity with the new sugar limit (convert Float back to Double)
-            val updatedUserProfile = existingUserProfile.copy(dailySugarLimit = newLimit.toDouble())
+            var updatedUserProfile = existingUserProfile.copy(dailySugarLimit = newLimit.toDouble())
+
+            // after that let´s complete the challenge
+            val goalSeekerChallenge = challengeRepository.getAllOnce().firstOrNull {
+                it.challengeType == 4 && !it.isCompleted
+            }
+            goalSeekerChallenge?.let {
+                val updatedChallenge = it.copy(isCompleted = true, currentCount = 1)
+                challengeRepository.updateChallenge(updatedChallenge)
+                addPoints(30)
+            }
             // Save the updated entity back to the database
             userProfileRepository.insertUserProfile(updatedUserProfile)
+        }
+    }
+
+    fun addPoints(pointsToAdd: Int) {
+        viewModelScope.launch {
+            val userProfile = userProfileRepository.getUserProfile().first() ?: return@launch
+            val updatedProfile = userProfile.copy(points = userProfile.points + pointsToAdd)
+            userProfileRepository.insertUserProfile(updatedProfile)
         }
     }
 }

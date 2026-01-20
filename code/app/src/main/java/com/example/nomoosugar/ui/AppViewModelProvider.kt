@@ -23,11 +23,11 @@ object AppViewModelProvider {
         initializer {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication
             // Provide ChallengeRepository to ChallengesViewModel
-            ChallengesViewModel(application.challengeRepository)
+            ChallengesViewModel(application.challengeRepository, application.userProfileRepository)
         }
         initializer {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication
-            ProfileViewModel(application.userProfileRepository)
+            ProfileViewModel(application.userProfileRepository, application.challengeRepository)
         }
     }
 }

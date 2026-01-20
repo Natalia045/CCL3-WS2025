@@ -7,17 +7,15 @@ import androidx.room.RoomDatabase
     entities = [
         SugarEntryEntity::class,
         FoodEntity::class,
-        ChallengeEntity::class,
-        UserProfileEntity::class
+        UserProfileEntity::class,
+        ChallengeEntity::class
     ],
-    version = 10,
-    exportSchema = false,
+    version = 2,
+    exportSchema = false
 )
 abstract class NoMooSugarDatabase : RoomDatabase() {
     abstract fun sugarEntryDao(): SugarEntryDao
     abstract fun foodDao(): FoodDao
-    abstract fun challengeDao(): ChallengeDao
-
     abstract fun userProfileDao(): UserProfileDao
-
+    abstract fun challengeDao(): ChallengeDao
 }

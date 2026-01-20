@@ -30,7 +30,7 @@ class EditViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val entryId: Long = savedStateHandle["entryId"] ?: 0L
+    private val entryId: Int = savedStateHandle["entryId"] ?: 0
 
     private var original: SugarEntryEntity? = null
 
@@ -38,9 +38,9 @@ class EditViewModel(
     val uiState: StateFlow<EditUiState> = _uiState.asStateFlow()
 
     init {
-        if (entryId != 0L) {
+        if (entryId != 0) {
             viewModelScope.launch {
-                repository.observeEntry(entryId)
+                repository.getById(entryId)
                     .filterNotNull()
                     .first()
                     .let { entry ->
@@ -98,7 +98,7 @@ class EditViewModel(
                 label = _uiState.value.label,
                 amount = amountDouble
             )
-            repository.updateEntry(updated)
+            repository.update(updated)
             _uiState.value = _uiState.value.copy(isSaving = false, isDirty = false, canSave = false)
             onDone()
         }
@@ -107,7 +107,7 @@ class EditViewModel(
     fun onDelete(onDone: () -> Unit) {
         val current = original ?: return
         viewModelScope.launch {
-            repository.deleteEntry(current)
+            repository.delete(current)
             onDone()
         }
     }

@@ -14,10 +14,10 @@ interface UserProfileDao {
     suspend fun insert(userProfile: UserProfileEntity)
 
     // Retrieves the single user profile with id = 1. Returns null if no user exists.
-    @Query("SELECT * FROM user_profiles WHERE id = 1")
+    @Query("SELECT * FROM user_profile WHERE id = 1")
     fun getUserProfile(): Flow<UserProfileEntity?>
 
     // Checks if a user profile with id = 1 exists. Returns true if it does, false otherwise.
-    @Query("SELECT EXISTS(SELECT 1 FROM user_profiles WHERE id = 1 LIMIT 1)")
+    @Query("SELECT EXISTS(SELECT 1 FROM user_profile WHERE id = 1 LIMIT 1)")
     fun hasUser(): Flow<Boolean>
 }

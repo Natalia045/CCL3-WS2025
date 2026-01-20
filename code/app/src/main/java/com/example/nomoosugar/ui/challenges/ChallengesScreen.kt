@@ -44,11 +44,24 @@ fun ChallengesScreen(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             )
         ) {
-            Text(
-                text = "Complete challenges to earn rewards 🐄",
-                modifier = Modifier.padding(16.dp),
-                fontWeight = FontWeight.Medium
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "TOTAL MOO-POINTS",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${uiState.userPoints}",
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))

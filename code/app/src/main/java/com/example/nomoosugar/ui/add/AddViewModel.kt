@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class AddViewModel(
     private val sugarRepository: SugarRepository,
@@ -38,13 +39,11 @@ class AddViewModel(
     fun addSugarEntry(label: String, amount: Double) {
         viewModelScope.launch {
             val entry = SugarEntryEntity(
-                id = 0L,
+                label = label,
                 amount = amount,
-                timestamp = System.currentTimeMillis(),
-                foodId = null,
-                label = label
+                timestamp = LocalDate.now().toEpochDay()
             )
-            sugarRepository.addEntry(entry)
+            sugarRepository.insert(entry)
         }
     }
 }
