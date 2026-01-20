@@ -1,14 +1,14 @@
 [
     {
       "challengeType": 1,
-      "title": "Sugar-Free Streak",
-      "description": "Stay under your goal for 7 days",
+      "title": "Read the Label",
+      "description": "Log a food where sugar info was manually checked",
       "targetCount": 7
     },
     {
       "challengeType": 2,
-      "title": "Weekend Warrior",
-      "description": "Keep it low on 3 weekends",
+      "title": "Snack Smarter",
+      "description": "Log a snack under 10 grams of sugar",
       "targetCount": 3
     },
     {

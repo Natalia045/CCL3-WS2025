@@ -6,6 +6,7 @@ import com.example.nomoosugar.db.FoodEntity
 import com.example.nomoosugar.db.SugarEntryEntity
 import com.example.nomoosugar.repository.FoodRepository
 import com.example.nomoosugar.repository.SugarRepository
+import com.example.nomoosugar.repository.ChallengeRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +16,8 @@ import java.time.LocalDate
 
 class AddViewModel(
     private val sugarRepository: SugarRepository,
-    private val foodRepository: FoodRepository
+    private val foodRepository: FoodRepository,
+    private val challengeRepository: ChallengeRepository
 ) : ViewModel() {
 
     private val _searchResults = MutableStateFlow<List<FoodEntity>>(emptyList())
@@ -44,6 +46,8 @@ class AddViewModel(
                 timestamp = LocalDate.now().toEpochDay()
             )
             sugarRepository.insert(entry)
+            challengeRepository.updateSugarStreakChallenge(LocalDate.now())
+            challengeRepository.updateSnackSmarterChallenge(amount)
         }
     }
 }

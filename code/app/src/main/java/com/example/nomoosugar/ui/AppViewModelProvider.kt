@@ -14,11 +14,11 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication
-            HomeViewModel(application.sugarRepository, application.userProfileRepository)
+            HomeViewModel(application.sugarRepository, application.userProfileRepository, application.challengeRepository)
         }
         initializer {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication
-            AddViewModel(application.sugarRepository, application.foodRepository)
+            AddViewModel(application.sugarRepository, application.foodRepository, application.challengeRepository)
         }
         initializer {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication

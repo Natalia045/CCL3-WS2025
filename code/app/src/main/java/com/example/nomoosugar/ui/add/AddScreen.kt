@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.nomoosugar.ui.AppViewModelProvider
@@ -27,7 +26,7 @@ fun AddScreen(nav: NavController) {
     var label by remember { mutableStateOf("Food") }
     var grams by remember { mutableStateOf("0") }
     var searchQuery by remember { mutableStateOf("") }
-    val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
+    val searchResults by viewModel.searchResults.collectAsState()
     
     // Debounce search
     LaunchedEffect(searchQuery) {

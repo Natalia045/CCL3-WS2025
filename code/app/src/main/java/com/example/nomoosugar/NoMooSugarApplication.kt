@@ -73,6 +73,10 @@ class NoMooSugarApplication : Application() {
             }
     }
 
+    val userProfileRepository: UserProfileRepository by lazy {
+        UserProfileRepository(database.userProfileDao())
+    }
+
     val sugarRepository: SugarRepository by lazy {
         SugarRepository(database.sugarEntryDao())
     }
@@ -82,10 +86,6 @@ class NoMooSugarApplication : Application() {
     }
 
     val challengeRepository: ChallengeRepository by lazy {
-        ChallengeRepository(database.challengeDao())
-    }
-
-    val userProfileRepository: UserProfileRepository by lazy {
-        UserProfileRepository(database.userProfileDao())
+        ChallengeRepository(database.challengeDao(), userProfileRepository)
     }
 }

@@ -2,7 +2,9 @@ package com.example.nomoosugar.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.nomoosugar.db.SugarEntryEntity
 import com.example.nomoosugar.db.UserProfileEntity
+import com.example.nomoosugar.repository.ChallengeRepository
 import com.example.nomoosugar.repository.SugarRepository
 import com.example.nomoosugar.repository.UserProfileRepository
 import kotlinx.coroutines.flow.SharingStarted
@@ -10,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 // Data class to represent the UI state for the HomeScreen
 data class HomeUiState(
@@ -20,7 +24,8 @@ data class HomeUiState(
 
 class HomeViewModel(
     private val sugarRepository: SugarRepository,
-    private val userProfileRepository: UserProfileRepository
+    private val userProfileRepository: UserProfileRepository,
+    private val challengeRepository: ChallengeRepository
 ) : ViewModel() {
 
     val todayEntries = sugarRepository.getTodayEntries()
@@ -53,6 +58,19 @@ class HomeViewModel(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = HomeUiState()
     )
+
+    fun addFoodEntry(label: String, sugarAmount: Double) {
+        viewModelScope.launch {
+            val entry = SugarEntryEntity(
+                label = label,
+                amount = sugarAmount,
+                timestamp = LocalDate.now().toEpochDay()
+            )
+            sugarRepository.insert(entry)
+            challengeRepository.updateSugarStreakChallenge(LocalDate.now())
+            challengeRepository.updateSnackSmarterChallenge(sugarAmount)
+        }
+    }
 }
 
 data class SugarItem(val id: Long, val label: String, val grams: Float)
