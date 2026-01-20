@@ -9,5 +9,6 @@ data class UserProfileEntity(
     val id: Int = 0,
     val name: String = "Default User",
     val dailySugarLimit: Double = 50.0,
-    val points: Int = 0
+    val points: Int = 0,
+    val notificationsEnabled: Boolean = false
 )

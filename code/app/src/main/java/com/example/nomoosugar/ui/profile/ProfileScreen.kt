@@ -135,7 +135,6 @@ fun ProfileScreen() {
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { /* TODO: Potentially navigate to notifications settings */ }
             ) {
                 Row(
                     modifier = Modifier
@@ -161,10 +160,9 @@ fun ProfileScreen() {
                             fontWeight = FontWeight.Medium
                         )
                     }
-                    Icon(
-                        Icons.Default.ChevronRight,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    Switch(
+                        checked = uiState.notificationsEnabled,
+                        onCheckedChange = { viewModel.toggleNotifications(it) }
                     )
                 }
             }
