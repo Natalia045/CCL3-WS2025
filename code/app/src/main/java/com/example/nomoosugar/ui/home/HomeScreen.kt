@@ -49,11 +49,11 @@ fun HomeScreen(nav: NavController) {
 
     Scaffold(
         floatingActionButton = {
-            LargeFloatingActionButton(
+            FloatingActionButton(
                 onClick = { nav.navigate("add") },
                 containerColor = HomeTitleBlue
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White, modifier = Modifier.size(36.dp))
+                Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
             }
         }
     ) { paddingValues ->
