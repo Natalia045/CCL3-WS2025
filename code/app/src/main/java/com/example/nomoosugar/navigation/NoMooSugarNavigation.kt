@@ -60,6 +60,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.nomoosugar.ui.theme.NavBarGray
@@ -179,7 +180,9 @@ fun NoMooSugarNavigation(
                             painter = painterResource(id = iconRes),
                             contentDescription = "Cow Icon",
                             // Optional: You can make the speaking cow slightly larger if needed
-                            modifier = Modifier.padding(4.dp)
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .size(48.dp)
                         )
                     }
                 },
