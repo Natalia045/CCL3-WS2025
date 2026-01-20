@@ -75,11 +75,13 @@ class NavigationViewModel : ViewModel() {
 
     private val messages = listOf(
         "Hello!",
-        "Yummi!",
-        "No Sugar!",
+        "Yummy!",
         "Stay Strong!",
         "Moo!",
-        "Healthy!"
+        "Healthy!",
+        "What did you eat today?",
+        "Keep it low sweet!",
+        "How are you doing?"
     )
 
     init {
