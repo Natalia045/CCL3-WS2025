@@ -47,18 +47,17 @@ class ChallengesViewModel(
             val challengeToActivate = challengeRepository.getAllOnce().firstOrNull { it.id == id }
 
             challengeToActivate?.let {
-                // When activating, set isActive, but keep progress at 0.
-                // Set lastUpdated to 0 as a flag that the first entry is still needed.
                 val updatedChallenge = it.copy(
                     isActive = true,
-                    currentCount = 0,
+                    currentCount = 0,   // ✅ reset to 0
                     isCompleted = false,
-                    lastUpdated = 0L // Use 0 to indicate the challenge has started but no progress is logged
+                    lastUpdated = 0L
                 )
                 challengeRepository.updateChallenge(updatedChallenge)
             }
         }
     }
+
 
     private fun completeChallenge(challengeType: Int, progress: Int = 1) {
         viewModelScope.launch {

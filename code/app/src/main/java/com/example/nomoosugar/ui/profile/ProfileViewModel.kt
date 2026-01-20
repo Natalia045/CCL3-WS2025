@@ -46,29 +46,15 @@ class ProfileViewModel(
     fun updateDailySugarLimit(newLimit: Float) { // Accepts Float from the UI slider
         viewModelScope.launch {
             // Get the current user profile entity from the repository (to preserve its ID and name)
-            var existingUserProfile = userProfileRepository.getUserProfile().first() ?: UserProfileEntity()
+            val existingUserProfile = userProfileRepository.getUserProfile().first() ?: UserProfileEntity()
             // Create an updated entity with the new sugar limit (convert Float back to Double)
-            var updatedUserProfile = existingUserProfile.copy(dailySugarLimit = newLimit.toDouble())
-
-            // after that let´s complete the challenge
-            val goalSeekerChallenge = challengeRepository.getAllOnce().firstOrNull {
-                it.challengeType == 4 && !it.isCompleted
-            }
-            goalSeekerChallenge?.let {
-                val updatedChallenge = it.copy(isCompleted = true, currentCount = 1)
-                challengeRepository.updateChallenge(updatedChallenge)
-                addPoints(30)
-            }
+            val updatedUserProfile = existingUserProfile.copy(dailySugarLimit = newLimit.toDouble())
+            
             // Save the updated entity back to the database
             userProfileRepository.insertUserProfile(updatedUserProfile)
-        }
-    }
+            challengeRepository.updateGoalSeekerChallenge()
 
-    fun addPoints(pointsToAdd: Int) {
-        viewModelScope.launch {
-            val userProfile = userProfileRepository.getUserProfile().first() ?: return@launch
-            val updatedProfile = userProfile.copy(points = userProfile.points + pointsToAdd)
-            userProfileRepository.insertUserProfile(updatedProfile)
+            }
+
         }
-    }
 }
