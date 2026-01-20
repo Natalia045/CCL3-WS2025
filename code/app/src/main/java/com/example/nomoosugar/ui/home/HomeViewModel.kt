@@ -13,12 +13,14 @@ import kotlinx.coroutines.flow.combine // Import combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.util.Calendar
+import com.example.nomoosugar.R // Import R for drawable resources
 
 // Data class to represent the UI state for the HomeScreen
 data class HomeUiState(
     val dailySugarLimit: Float = 50.0f, // Daily sugar limit from UserProfile
     val todayTotalSugar: Float = 0f,    // Total sugar consumed today
-    val todayEntries: List<SugarItem> = emptyList() // List of sugar entries for today
+    val todayEntries: List<SugarItem> = emptyList(), // List of sugar entries for today
+    val cowImageResId: Int = R.drawable.cow_white_normal // Resource ID for the cow image
 )
 
 class HomeViewModel(
@@ -57,11 +59,20 @@ class HomeViewModel(
         todayTotal,                            // Flow of Float (today's total sugar)
         todayEntriesList                       // Flow of List<SugarItem>
     ) { userProfile, totalSugar, entriesList ->
-        val currentProfile = userProfile ?: UserProfileEntity() // Handle null userProfile
+        val currentProfile = userProfile ?: UserProfileEntity()
+        val sugarLimit = currentProfile.dailySugarLimit.toFloat()
+        val imageResId = when {
+            totalSugar == 0f && sugarLimit == 0f -> R.drawable.cow_white_happy
+            totalSugar == 0f -> R.drawable.cow_white_normal
+            totalSugar < sugarLimit / 2 -> R.drawable.cow_white_happy
+            totalSugar > sugarLimit -> R.drawable.cow_white_ate_lot_of_sugar
+            else -> R.drawable.cow_white_normal
+        }
         HomeUiState(
-            dailySugarLimit = currentProfile.dailySugarLimit.toFloat(),
+            dailySugarLimit = sugarLimit,
             todayTotalSugar = totalSugar,
-            todayEntries = entriesList
+            todayEntries = entriesList,
+            cowImageResId = imageResId
         )
     }.stateIn(
         scope = viewModelScope,

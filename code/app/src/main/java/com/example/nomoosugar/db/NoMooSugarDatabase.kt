@@ -17,7 +17,6 @@ abstract class NoMooSugarDatabase : RoomDatabase() {
     abstract fun sugarEntryDao(): SugarEntryDao
     abstract fun foodDao(): FoodDao
     abstract fun challengeDao(): ChallengeDao
-
     abstract fun userProfileDao(): UserProfileDao
 
 }

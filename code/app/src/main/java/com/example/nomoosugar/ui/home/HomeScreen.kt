@@ -1,5 +1,6 @@
 package com.example.nomoosugar.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,11 +13,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.nomoosugar.ui.AppViewModelProvider
+import com.example.nomoosugar.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +55,7 @@ fun HomeScreen(nav: NavController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Box(
                 modifier = Modifier.size(220.dp),
@@ -70,25 +73,35 @@ fun HomeScreen(nav: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text("🐄", style = MaterialTheme.typography.displayMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        // Use dailyGoal from uiState
-                        text = "${String.format("%.2f", todayTotal)} g / ${dailyGoal.toInt()}g",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isOverLimit) Color(0xFFD32F2F) else MaterialTheme.colorScheme.onBackground
+                    //Text("🐄", style = MaterialTheme.typography.displayMedium)
+                    Image(
+                        painter = painterResource(id = uiState.cowImageResId),
+                        contentDescription = "Cow Status",
+                        modifier = Modifier.size(192.dp)
                     )
-                    if (isOverLimit) {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "Over limit!",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFD32F2F),
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
+                    //Spacer(modifier = Modifier.height(8.dp))
+
+
                 }
+            }
+
+            Text(
+
+                // Use dailyGoal from uiState
+                text = "${todayTotal.toInt()} g / ${dailyGoal.toInt()}g",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = if (isOverLimit) Color(0xFFD32F2F) else MaterialTheme.colorScheme.onBackground
+            )
+
+            if (isOverLimit) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Over limit!",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFFD32F2F),
+                    fontWeight = FontWeight.Medium
+                )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -134,7 +147,7 @@ fun HomeScreen(nav: NavController) {
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                                 Text(
-                                    text = "${String.format("%.2f", item.grams)} g",
+                                    text = "${item.grams.toInt()} g",
                                     style = MaterialTheme.typography.bodyLarge,
                                     fontWeight = FontWeight.Medium
                                 )
