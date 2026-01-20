@@ -9,35 +9,51 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Color(0xFF64B5F6),
+    onPrimary = Color(0xFF0D47A1),
+    primaryContainer = Color(0xFF0D47A1),
+    onPrimaryContainer = Color(0xFFBBDEFB),
+    surface = Color(0xFF1F1F1F),
+    onSurface = Color(0xFFC0C0C0),
+    background = Color(0xFF121212),
+    onBackground = Color(0xFFC0C0C0),
+    surfaceVariant = Color(0xFF2E3E4C),
+    onSurfaceVariant = Color(0xFFA0A0A0),
+    secondary = Color(0xFF90CAF9),
+    onSecondary = Color(0xFF0D47A1),
+    tertiary = Color(0xFFBBDEFB),
+    onTertiary = Color(0xFF0D47A1)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
+    primary = ActionButton,
+    onPrimary = Color.White,
+    primaryContainer = ImportantBackground,
+    onPrimaryContainer = Color.White,
+    surface = NavBarBackgroundGray,
+    onSurface = Color(0xFF424242),
+    background = Color.White,
+    onBackground = Color(0xFF424242),
+    surfaceVariant = CardBackground,
+    onSurfaceVariant = Color(0xFF424242),
     secondary = PurpleGrey40,
     tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
 )
+
 
 @Composable
 fun NoMooSugarTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -48,6 +64,15 @@ fun NoMooSugarTheme(
 
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
+    }
+    // To make the clock on the top dark
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.surface.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+        }
     }
 
     MaterialTheme(

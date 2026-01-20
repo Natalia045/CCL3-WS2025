@@ -50,7 +50,6 @@ fun HomeScreen(nav: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -144,12 +143,14 @@ fun HomeScreen(nav: NavController) {
                             ) {
                                 Text(
                                     text = item.label,
-                                    style = MaterialTheme.typography.bodyLarge
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
                                     text = "${item.grams.toInt()} g",
                                     style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Medium
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }

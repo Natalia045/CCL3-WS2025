@@ -59,6 +59,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.core.tween
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.text.style.TextOverflow
 
 // --- 1. The ViewModel ---
@@ -136,6 +137,7 @@ fun NoMooSugarNavigation(
     val cowState by viewModel.cowState.collectAsState()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -198,9 +200,9 @@ fun NoMooSugarNavigation(
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         },
@@ -235,7 +237,7 @@ fun NoMooSugarNavigation(
 fun SpeechBubble(text: String) {
     Surface(
         shape = RoundedCornerShape(16.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.primaryContainer,
         shadowElevation = 4.dp
     ) {
         Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
@@ -248,7 +250,7 @@ fun SpeechBubble(text: String) {
 
             Text(
                 text = text,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontSize = fontSize,
                 fontWeight = FontWeight.ExtraBold,
 
@@ -279,7 +281,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
         val items = listOf(
             Triple(Routes.Home, "Home", Icons.Filled.Home),
             Triple(Routes.Challenges, "Challenges", Icons.Filled.EmojiEvents),
@@ -291,6 +293,13 @@ fun BottomNavigationBar(navController: NavHostController) {
                 icon = { Icon(icon, contentDescription = label) },
                 label = { Text(label) },
                 selected = currentDestination?.hierarchy?.any { it.route == route.route } == true,
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    indicatorColor = MaterialTheme.colorScheme.surfaceVariant
+                ),
                 onClick = {
                     navController.navigate(route.route) {
                         popUpTo(navController.graph.findStartDestination().id) { saveState = true }
