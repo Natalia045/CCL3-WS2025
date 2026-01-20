@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
@@ -59,8 +60,13 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.text.style.TextOverflow
+import com.example.nomoosugar.ui.theme.NavBarGray
+import com.example.nomoosugar.ui.theme.CloseButtonBackgroundGray
+import com.example.nomoosugar.ui.theme.CloseButtonLightBlueOpacity
+import com.example.nomoosugar.ui.theme.HomeTitleBlue
 
 // --- 1. The ViewModel ---
 // This handles the random timer and picking the random message
@@ -182,8 +188,10 @@ fun NoMooSugarNavigation(
                 actions = {
                     when {
                         currentRoute == Routes.Add.route -> {
-                            IconButton(onClick = { navController.popBackStack() }) {
-                                Icon(Icons.Filled.Close, "Close", tint = Color.White)
+                            IconButton(onClick = { navController.popBackStack() },
+                                modifier = Modifier.background(CloseButtonLightBlueOpacity, CircleShape)
+                            ) {
+                                Icon(Icons.Filled.Close, "Close", tint = HomeTitleBlue)
                             }
                         }
                         currentRoute?.startsWith("edit/") == true -> {
@@ -192,9 +200,10 @@ fun NoMooSugarNavigation(
                                     navController.currentBackStackEntry
                                         ?.savedStateHandle
                                         ?.set("requestDiscard", true)
-                                }
+                                },
+                                modifier = Modifier.background(CloseButtonLightBlueOpacity, CircleShape)
                             ) {
-                                Icon(Icons.Filled.Close, "Close", tint = Color.White)
+                                Icon(Icons.Filled.Close, "Close", tint = HomeTitleBlue)
                             }
                         }
                     }
@@ -281,7 +290,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+    NavigationBar(containerColor = NavBarGray) {
         val items = listOf(
             Triple(Routes.Home, "Home", Icons.Filled.Home),
             Triple(Routes.Challenges, "Challenges", Icons.Filled.EmojiEvents),

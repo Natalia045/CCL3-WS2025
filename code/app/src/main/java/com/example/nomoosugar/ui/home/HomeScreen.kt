@@ -20,6 +20,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.nomoosugar.ui.AppViewModelProvider
 import com.example.nomoosugar.R
+import com.example.nomoosugar.ui.theme.AppBlack
+import com.example.nomoosugar.ui.theme.CardBackgroundBlue
+import com.example.nomoosugar.ui.theme.FabBlue
+import com.example.nomoosugar.ui.theme.ProgressBaseGray
+import com.example.nomoosugar.ui.theme.ProgressBlue
+import com.example.nomoosugar.ui.theme.ProgressTrackBlend
+import com.example.nomoosugar.ui.theme.HomeTitleBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,15 +42,15 @@ fun HomeScreen(nav: NavController) {
 
     val progress = if (dailyGoal > 0) (todayTotal / dailyGoal).coerceAtMost(1f) else 0f
     val isOverLimit = todayTotal > dailyGoal
-    val progressColor = if (isOverLimit) Color(0xFFD32F2F) else MaterialTheme.colorScheme.primary
+    val progressColor = if (isOverLimit) Color(0xFFD32F2F) else HomeTitleBlue
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
+            LargeFloatingActionButton(
                 onClick = { nav.navigate("add") },
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = HomeTitleBlue
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
+                Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White, modifier = Modifier.size(36.dp))
             }
         }
     ) { paddingValues ->
@@ -57,15 +64,15 @@ fun HomeScreen(nav: NavController) {
             Spacer(modifier = Modifier.height(12.dp))
 
             Box(
-                modifier = Modifier.size(220.dp),
+                modifier = Modifier.size(280.dp),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
                     progress = { progress },
                     modifier = Modifier.fillMaxSize(0.9f),
-                    strokeWidth = 16.dp,
+                    strokeWidth = 20.dp,
                     color = progressColor,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant
+                    trackColor = ProgressTrackBlend
                 )
 
                 Column(
@@ -76,7 +83,7 @@ fun HomeScreen(nav: NavController) {
                     Image(
                         painter = painterResource(id = uiState.cowImageResId),
                         contentDescription = "Cow Status",
-                        modifier = Modifier.size(192.dp)
+                        modifier = Modifier.size(240.dp)
                     )
                     //Spacer(modifier = Modifier.height(8.dp))
 
@@ -88,9 +95,9 @@ fun HomeScreen(nav: NavController) {
 
                 // Use dailyGoal from uiState
                 text = "${todayTotal.toInt()} g / ${dailyGoal.toInt()}g",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = if (isOverLimit) Color(0xFFD32F2F) else MaterialTheme.colorScheme.onBackground
+                color = if (isOverLimit) Color(0xFFD32F2F) else AppBlack
             )
 
             if (isOverLimit) {
@@ -131,7 +138,7 @@ fun HomeScreen(nav: NavController) {
                                 .fillMaxWidth()
                                 .clickable { nav.navigate("edit/${item.id}") },
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                containerColor = CardBackgroundBlue
                             )
                         ) {
                             Row(
@@ -144,13 +151,13 @@ fun HomeScreen(nav: NavController) {
                                 Text(
                                     text = item.label,
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = AppBlack
                                 )
                                 Text(
                                     text = "${item.grams.toInt()} g",
                                     style = MaterialTheme.typography.bodyLarge,
                                     fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = AppBlack
                                 )
                             }
                         }

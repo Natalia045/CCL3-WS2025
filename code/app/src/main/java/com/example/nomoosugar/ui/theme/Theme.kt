@@ -17,33 +17,31 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF64B5F6),
-    onPrimary = Color(0xFF0D47A1),
-    primaryContainer = Color(0xFF0D47A1),
-    onPrimaryContainer = Color(0xFFBBDEFB),
-    surface = Color(0xFF1F1F1F),
-    onSurface = Color(0xFFC0C0C0),
-    background = Color(0xFF121212),
-    onBackground = Color(0xFFC0C0C0),
-    surfaceVariant = Color(0xFF2E3E4C),
-    onSurfaceVariant = Color(0xFFA0A0A0),
-    secondary = Color(0xFF90CAF9),
-    onSecondary = Color(0xFF0D47A1),
-    tertiary = Color(0xFFBBDEFB),
-    onTertiary = Color(0xFF0D47A1)
+    primary = FabBlue,
+    onPrimary = Color.White,
+    primaryContainer = SelectedIconBoxBlue,
+    onPrimaryContainer = AppBlack,
+    surface = Color(0xFF2C2C2C),
+    onSurface = Color.White,
+    background = Color(0xFF1C1C1C),
+    onBackground = Color.White,
+    surfaceVariant = NavBarGray,
+    onSurfaceVariant = Color.White,
+    secondary = PurpleGrey40,
+    tertiary = Pink40
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = ActionButton,
+    primary = HomeTitleBlue,
     onPrimary = Color.White,
-    primaryContainer = ImportantBackground,
+    primaryContainer = HomeTitleBlue,
     onPrimaryContainer = Color.White,
-    surface = NavBarBackgroundGray,
-    onSurface = Color(0xFF424242),
+    surface = CardBackgroundBlue,
+    onSurface = HomeTitleBlue,
     background = Color.White,
-    onBackground = Color(0xFF424242),
-    surfaceVariant = CardBackground,
-    onSurfaceVariant = Color(0xFF424242),
+    onBackground = AppBlack,
+    surfaceVariant = CardBackgroundBlue,
+    onSurfaceVariant = AppBlack,
     secondary = PurpleGrey40,
     tertiary = Pink40
 )
