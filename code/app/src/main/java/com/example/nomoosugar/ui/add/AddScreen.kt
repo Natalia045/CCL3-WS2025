@@ -54,13 +54,10 @@ fun AddScreen(nav: NavController) {
                 fontWeight = FontWeight.Medium
             )
         }
-
-
+        */
 
         Spacer(modifier = Modifier.height(24.dp))
         QuickAddSection(viewModel, nav)
-
-         */
         Spacer(modifier = Modifier.height(24.dp))
         SearchFoodSection(searchQuery, onQueryChange = { searchQuery = it }, searchResults, onSelect = {
             label = it.name
