@@ -20,6 +20,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.nomoosugar.ui.AppViewModelProvider
 import kotlinx.coroutines.delay
+import androidx.compose.ui.unit.sp
+import com.example.nomoosugar.ui.theme.AppBlack
+import com.example.nomoosugar.ui.theme.CardBackgroundBlue
+import com.example.nomoosugar.ui.theme.HomeTitleBlue
 
 @Composable
 fun AddScreen(nav: NavController) {
@@ -38,6 +42,7 @@ fun AddScreen(nav: NavController) {
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
+        /*
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
@@ -50,8 +55,12 @@ fun AddScreen(nav: NavController) {
             )
         }
 
+
+
         Spacer(modifier = Modifier.height(24.dp))
         QuickAddSection(viewModel, nav)
+
+         */
         Spacer(modifier = Modifier.height(24.dp))
         SearchFoodSection(searchQuery, onQueryChange = { searchQuery = it }, searchResults, onSelect = {
             label = it.name
@@ -69,6 +78,7 @@ fun AddScreen(nav: NavController) {
     }
 }
 
+/*
 @Composable
 fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
     Text("Quick Add", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
@@ -83,6 +93,7 @@ fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
         QuickAddButton("Soda 35g") { viewModel.addSugarEntry("Soda", 35.0, false); nav.popBackStack() }
     }
 }
+*/
 
 @Composable
 fun SearchFoodSection(
@@ -149,9 +160,104 @@ fun CustomEntrySection(
     }
 }
 
+/*
 @Composable
 fun QuickAddButton(text: String, onClick: () -> Unit) {
     OutlinedButton(onClick = onClick, modifier = Modifier.height(56.dp), shape = RoundedCornerShape(12.dp)) {
         Text(text, fontWeight = FontWeight.Medium)
+    }
+}
+*/
+
+
+@Composable
+fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
+    Text(
+        "Quick Add", 
+        style = MaterialTheme.typography.titleLarge, 
+        fontWeight = FontWeight.Bold
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+    
+    // Row 1
+    Row(
+        modifier = Modifier.fillMaxWidth(), 
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        QuickAddButton(
+            label = "Coffee",
+            amount = "5g",
+            modifier = Modifier.weight(1f),
+            onClick = { viewModel.addSugarEntry("Coffee", 5.0, false); nav.popBackStack() }
+        )
+        QuickAddButton(
+            label = "Fruit",
+            amount = "10g",
+            modifier = Modifier.weight(1f),
+            onClick = { viewModel.addSugarEntry("Fruit", 10.0, false); nav.popBackStack() }
+        )
+    }
+    
+    Spacer(modifier = Modifier.height(12.dp))
+    
+    // Row 2
+    Row(
+        modifier = Modifier.fillMaxWidth(), 
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        QuickAddButton(
+            label = "Snack",
+            amount = "15g",
+            modifier = Modifier.weight(1f),
+            onClick = { viewModel.addSugarEntry("Snack", 15.0, false); nav.popBackStack() }
+        )
+        QuickAddButton(
+            label = "Soda",
+            amount = "35g",
+            modifier = Modifier.weight(1f),
+            onClick = { viewModel.addSugarEntry("Soda", 35.0, false); nav.popBackStack() }
+        )
+    }
+}
+
+@Composable
+fun QuickAddButton(
+    label: String, 
+    amount: String, 
+    modifier: Modifier = Modifier, 
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            // Matches the light blue in the image (from your Color.kt)
+            containerColor = CardBackgroundBlue 
+        ),
+        modifier = modifier.height(100.dp) // Fixed height to match the boxy look
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp)
+        ) {
+            // Top Left Label (Blue)
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleMedium,
+                color = HomeTitleBlue, // Using the specific blue from theme
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.align(Alignment.TopStart)
+            )
+
+            // Bottom Right Amount (Black, Large)
+            Text(
+                text = amount,
+                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 32.sp),
+                color = AppBlack,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
+        }
     }
 }

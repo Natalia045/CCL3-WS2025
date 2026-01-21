@@ -61,8 +61,9 @@ fun ProfileScreen() {
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            //Spacer(modifier = Modifier.height(32.dp))
 
+    /* 
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -91,7 +92,7 @@ fun ProfileScreen() {
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { /* TODO: Potentially navigate to an edit name screen */ }
+                onClick = { }
             ) {
                 Row(
                     modifier = Modifier
@@ -133,6 +134,7 @@ fun ProfileScreen() {
                     )
                 }
             }
+            */
 
             Spacer(modifier = Modifier.height(16.dp))
 
