@@ -20,6 +20,8 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.flow.collectLatest
 import androidx.compose.ui.platform.LocalContext
 import com.example.nomoosugar.NoMooSugarApplication
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun EditScreen(nav: NavController, entryId: Long) {
@@ -49,7 +51,12 @@ fun EditScreen(nav: NavController, entryId: Long) {
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(

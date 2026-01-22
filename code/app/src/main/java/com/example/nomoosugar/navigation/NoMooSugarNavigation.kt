@@ -218,7 +218,8 @@ fun NoMooSugarNavigation(
             )
         },
         bottomBar = {
-            if (currentRoute != Routes.Add.route) {
+            val routesWithoutBottomBar = listOf(Routes.Add.route, Routes.Edit.route)
+            if (currentRoute !in routesWithoutBottomBar) {
                 BottomNavigationBar(navController = navController)
             }
         }

@@ -31,6 +31,7 @@ import com.example.nomoosugar.ui.theme.ProgressBlue
 import com.example.nomoosugar.ui.theme.ProgressTrackBlend
 import com.example.nomoosugar.ui.theme.HomeTitleBlue
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(nav: NavController) {
@@ -97,9 +98,8 @@ fun HomeScreen(nav: NavController) {
             }
 
             Text(
-
                 // Use dailyGoal from uiState
-                text = "${todayTotal.toInt()} g / ${dailyGoal.toInt()}g",
+                text = "${todayTotal.toInt()}g / ${dailyGoal.toInt()}g",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = if (isOverLimit) Color(0xFFD32F2F) else AppBlack
