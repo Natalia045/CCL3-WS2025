@@ -172,7 +172,6 @@ fun CustomEntrySection(
         ), 
         keyboardActions = KeyboardActions(onDone = {
             focusManager.clearFocus()
-            onAddClick() // Trigger the add action when Enter is pressed
         })
     )
 
