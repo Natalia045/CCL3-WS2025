@@ -3,6 +3,8 @@ package com.example.nomoosugar.repository
 import com.example.nomoosugar.db.ChallengeDao
 import com.example.nomoosugar.db.ChallengeEntity
 import com.example.nomoosugar.db.UserProfileEntity
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import java.time.LocalDate
 
@@ -10,19 +12,26 @@ class ChallengeRepository(
     private val dao: ChallengeDao,
     private val userProfileRepository: UserProfileRepository
 ) {
+    private val _challengeCompleted = MutableStateFlow<ChallengeEntity?>(null)
+    val challengeCompleted = _challengeCompleted.asStateFlow()
 
     // Returns all challenges as a Flow for UI
     fun getAllChallenges() = dao.getAllChallenges()
 
     suspend fun insertChallenges(challenges: List<ChallengeEntity>) = dao.insertChallenges(challenges)
 
-    suspend fun updateChallenge(challenge: ChallengeEntity) = dao.updateChallenge(challenge)
+    suspend fun updateChallenge(challenge: ChallengeEntity) {
+        dao.updateChallenge(challenge)
+        if (challenge.isCompleted) {
+            _challengeCompleted.value = challenge
+        }
+    }
 
     suspend fun getAllOnce(): List<ChallengeEntity> = dao.getAllOnce()
 
     suspend fun activateChallenge(id: Int) {
         val challenge = dao.getAllOnce().firstOrNull { it.id == id } ?: return
-        dao.updateChallenge(
+        updateChallenge(
             challenge.copy(
                 isActive = true,
                 currentCount = 0,
@@ -50,7 +59,7 @@ class ChallengeRepository(
         if (completed && !readLabel.isCompleted) {
             awardPoints(20)
         }
-        dao.updateChallenge(readLabel.copy(currentCount = newCount, isCompleted = completed))
+        updateChallenge(readLabel.copy(currentCount = newCount, isCompleted = completed))
     }
 
     /** Snack Smarter challenge: sugar <= 10g */
@@ -64,7 +73,7 @@ class ChallengeRepository(
         if (completed && !challenge.isCompleted) {
             awardPoints(30)
         }
-        dao.updateChallenge(challenge.copy(currentCount = newCount, isCompleted = completed))
+        updateChallenge(challenge.copy(currentCount = newCount, isCompleted = completed))
     }
 
     /** Goal Seeker: set sugar goal */
@@ -73,7 +82,7 @@ class ChallengeRepository(
         if (challenge.isCompleted) return
 
         awardPoints(10)
-        dao.updateChallenge(challenge.copy(currentCount = 1, isCompleted = true))
+        updateChallenge(challenge.copy(currentCount = 1, isCompleted = true))
     }
 
     /** Sugar streak (type 3) */
@@ -81,7 +90,7 @@ class ChallengeRepository(
         val challenge = dao.getActiveChallenge(3) ?: return
         if (challenge.isCompleted) return
         if (challenge.lastUpdated == 0L) {
-            dao.updateChallenge(challenge.copy(currentCount = 1, lastUpdated = logDate.toEpochDay()))
+            updateChallenge(challenge.copy(currentCount = 1, lastUpdated = logDate.toEpochDay()))
             return
         }
 
@@ -97,14 +106,14 @@ class ChallengeRepository(
                     awardPoints(30)
                 }
 
-                dao.updateChallenge(challenge.copy(
+                updateChallenge(challenge.copy(
                     currentCount = newCount,
                     isCompleted = completed,
                     lastUpdated = today.toEpochDay()
                 ))
             }
             lastUpdate == today -> {} // do nothing
-            else -> dao.updateChallenge(challenge.copy(currentCount = 1, lastUpdated = today.toEpochDay()))
+            else -> updateChallenge(challenge.copy(currentCount = 1, lastUpdated = today.toEpochDay()))
         }
     }
 }
