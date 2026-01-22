@@ -46,7 +46,7 @@ fun AddScreen(nav: NavController) {
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text("Search", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
         SearchFoodSection(searchQuery, onQueryChange = { searchQuery = it }, searchResults, onSelect = {
@@ -54,7 +54,7 @@ fun AddScreen(nav: NavController) {
             grams = it.sugarAmount.toString()
             searchQuery = ""
         })
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         
         // Pass the onAddClick lambda directly
         CustomEntrySection(label, grams, onLabelChange = { label = it }, onGramsChange = { grams = it }) {
@@ -66,7 +66,7 @@ fun AddScreen(nav: NavController) {
                 nav.popBackStack()
             }
         }
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         QuickAddSection(viewModel, nav)
     }
 }
@@ -143,7 +143,7 @@ fun CustomEntrySection(
     onAddClick: () -> Unit
 ) {
     Text("Custom Entry", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     val focusManager = LocalFocusManager.current
 
@@ -159,7 +159,7 @@ fun CustomEntrySection(
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next) 
     )
 
-    Spacer(modifier = Modifier.height(12.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     // CHANGED: Sugar Amount is now second
     OutlinedTextField(
@@ -179,7 +179,7 @@ fun CustomEntrySection(
         })
     )
 
-    Spacer(modifier = Modifier.height(24.dp))
+    Spacer(modifier = Modifier.height(16.dp))
     
     Button(
         onClick = onAddClick, 
@@ -198,7 +198,7 @@ fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
         style = MaterialTheme.typography.titleLarge,
         fontWeight = FontWeight.Bold
     )
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     // Row 1
     Row(
@@ -219,7 +219,7 @@ fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
         )
     }
 
-    Spacer(modifier = Modifier.height(12.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     // Row 2
     Row(

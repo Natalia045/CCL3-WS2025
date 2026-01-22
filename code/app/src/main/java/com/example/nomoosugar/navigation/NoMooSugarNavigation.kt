@@ -1,5 +1,6 @@
 package com.example.nomoosugar.navigation
 
+import com.example.nomoosugar.ui.AppViewModelProvider
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -29,8 +30,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -45,20 +44,21 @@ import com.example.nomoosugar.ui.challenges.ChallengesScreen
 import com.example.nomoosugar.ui.edit.EditScreen
 import com.example.nomoosugar.ui.home.HomeScreen
 import com.example.nomoosugar.ui.profile.ProfileScreen
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import com.example.nomoosugar.R
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.example.nomoosugar.db.ChallengeEntity
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -72,59 +72,18 @@ import com.example.nomoosugar.ui.theme.FabBlue
 import com.example.nomoosugar.ui.theme.NavBarGray
 import com.example.nomoosugar.ui.theme.AppBlack
 import androidx.compose.ui.graphics.Color // Import Color for Color.White
-
-// --- 1. The ViewModel ---
-// This handles the random timer and picking the random message
-class NavigationViewModel : ViewModel() {
-
-    // Simple state holder
-    data class CowState(
-        val isSpeaking: Boolean = false,
-        val message: String = ""
-    )
-
-    private val _cowState = MutableStateFlow(CowState())
-    val cowState = _cowState.asStateFlow()
-
-    private val messages = listOf(
-        "Hello!",
-        "Yummy!",
-        "Stay Strong!",
-        "Moo!",
-        "Healthy!",
-        "What did you eat today?",
-        "Keep it low sweet!",
-        "How are you doing?"
-    )
-
-    init {
-        startCowLoop()
-    }
-
-    private fun startCowLoop() {
-        viewModelScope.launch {
-            while (true) {
-                // 1. Wait for a random time (e.g., between 5 and 15 seconds)
-                val waitTime = Random.nextLong(5000, 15000)
-                delay(waitTime)
-
-                // 2. Start Speaking
-                _cowState.update {
-                    it.copy(
-                        isSpeaking = true,
-                        message = messages.random()
-                    )
-                }
-
-                // 3. Speak for 3 seconds
-                delay(3000)
-
-                // 4. Stop Speaking
-                _cowState.update { it.copy(isSpeaking = false) }
-            }
-        }
-    }
-}
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.animation.core.rememberInfiniteTransition
 
 enum class Routes(val route: String) {
     Home("home"),
@@ -138,7 +97,7 @@ enum class Routes(val route: String) {
 @Composable
 fun NoMooSugarNavigation(
     // Inject the ViewModel here
-    viewModel: NavigationViewModel = viewModel()
+    viewModel: NoMooSugarNavigationViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -236,6 +195,12 @@ fun NoMooSugarNavigation(
             }
         }
     ) { paddingValues ->
+        if (cowState.completedChallenge != null) {
+            ChallengeCompletedDialog(
+                challenge = cowState.completedChallenge!!,
+                onDismiss = { viewModel.dismissChallengeCompletedDialog() }
+            )
+        }
         NavHost(
             navController = navController,
             startDestination = Routes.Home.route,
@@ -277,7 +242,7 @@ fun SpeechBubble(text: String) {
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontSize = fontSize,
                 fontWeight = FontWeight.ExtraBold,
-
+                
                 // 2. The "Safety Net" for the worst case
                 maxLines = 1,
                 softWrap = false,
@@ -298,6 +263,70 @@ fun getTitleForRoute(navController: NavHostController): String {
         Routes.Add.route -> "Add Sugar"
         else -> if (route.startsWith("edit/")) "Edit Entry" else "NoMooSugar"
     }
+}
+
+@Composable
+fun ChallengeCompletedDialog(challenge: ChallengeEntity, onDismiss: () -> Unit) {
+    val rotation = remember { Animatable(0f) }
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite transition")
+    val animatedColor by infiniteTransition.animateColor(
+        initialValue = Color(0xFFD49DE9),
+        targetValue = Color(0xFFAEC6F5),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 300, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ), label = "color"
+    )
+
+    LaunchedEffect(Unit) {
+        launch {
+            rotation.animateTo(
+                targetValue = 15f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 300, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse
+                )
+            )
+        }
+        launch {
+            rotation.animateTo(
+                targetValue = -15f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 300, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse
+                )
+            )
+        }
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Challenge Completed!") },
+        text = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(
+                    painter = painterResource(id = R.drawable.cow_white_happy),
+                    contentDescription = "Happy Cow",
+                    modifier = Modifier
+                        .size(128.dp)
+                        .rotate(rotation.value)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("You've completed the '${challenge.title}' challenge!")
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF53027B)
+                )
+            ) {
+                Text("Hooray!")
+            }
+        },
+        containerColor = animatedColor
+    )
 }
 
 @Composable

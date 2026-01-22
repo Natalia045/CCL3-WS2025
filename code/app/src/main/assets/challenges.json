@@ -2,13 +2,13 @@
   {
     "challengeType": 1,
     "title": "Read the Label",
-    "description": "Log a food where sugar info was manually checked",
+    "description": "Log 3 foods where sugar info was manually checked",
     "targetCount": 3
   },
   {
     "challengeType": 2,
     "title": "Snack Smarter",
-    "description": "Log a snack under 10 grams of sugar",
+    "description": "Log 3 snacks under 10 grams of sugar",
     "targetCount": 3
   },
   {
