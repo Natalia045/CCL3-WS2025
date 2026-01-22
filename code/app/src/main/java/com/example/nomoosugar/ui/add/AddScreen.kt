@@ -24,6 +24,10 @@ import androidx.compose.ui.unit.sp
 import com.example.nomoosugar.ui.theme.AppBlack
 import com.example.nomoosugar.ui.theme.CardBackgroundBlue
 import com.example.nomoosugar.ui.theme.HomeTitleBlue
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.ui.platform.LocalFocusManager
 
 @Composable
 fun AddScreen(nav: NavController) {
@@ -42,20 +46,6 @@ fun AddScreen(nav: NavController) {
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        /*
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-        ) {
-            Text(
-                "What did you eat today?",
-                modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
-            )
-        }
-        */
-
         Spacer(modifier = Modifier.height(24.dp))
         QuickAddSection(viewModel, nav)
         Spacer(modifier = Modifier.height(24.dp))
@@ -65,9 +55,13 @@ fun AddScreen(nav: NavController) {
             searchQuery = ""
         })
         Spacer(modifier = Modifier.height(24.dp))
+        
+        // Pass the onAddClick lambda directly
         CustomEntrySection(label, grams, onLabelChange = { label = it }, onGramsChange = { grams = it }) {
-            val gramsValue = grams.toDoubleOrNull() ?: 0.0
-            if (gramsValue > 0) {
+            val gramsValue = grams.toDoubleOrNull()
+            
+            // CHANGED: Logic now checks if gramsValue is not null and >= 0 (allows 0g)
+            if (gramsValue != null && gramsValue >= 0) {
                 viewModel.addSugarEntry(label.ifEmpty { "Food" }, gramsValue, isManual = true)
                 nav.popBackStack()
             }
@@ -148,37 +142,64 @@ fun CustomEntrySection(
 ) {
     Text("Custom Entry", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(modifier = Modifier.height(16.dp))
-    OutlinedTextField(value = grams, onValueChange = onGramsChange, label = { Text("Sugar (g)") }, modifier = Modifier.fillMaxWidth())
+
+    val focusManager = LocalFocusManager.current
+
+    // CHANGED: Label (Name) is now first
+    OutlinedTextField(
+        value = label,
+        onValueChange = onLabelChange,
+        label = { Text("Food Name") }, // Changed label text slightly for clarity
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        // CHANGED: Action is now Next (moves to sugar amount)
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next) 
+    )
+
     Spacer(modifier = Modifier.height(12.dp))
-    OutlinedTextField(value = label, onValueChange = onLabelChange, label = { Text("Label") }, modifier = Modifier.fillMaxWidth())
+
+    // CHANGED: Sugar Amount is now second
+    OutlinedTextField(
+        value = grams,
+        onValueChange = onGramsChange,
+        label = { Text("Sugar (g)") },
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        // CHANGED: Action is now Done (submits form)
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done,
+            keyboardType = androidx.compose.ui.text.input.KeyboardType.Number // Added Number type for better UX
+        ), 
+        keyboardActions = KeyboardActions(onDone = {
+            focusManager.clearFocus()
+            onAddClick() // Trigger the add action when Enter is pressed
+        })
+    )
+
     Spacer(modifier = Modifier.height(24.dp))
-    Button(onClick = onAddClick, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(12.dp)) {
+    
+    Button(
+        onClick = onAddClick, 
+        modifier = Modifier.fillMaxWidth().height(56.dp), 
+        shape = RoundedCornerShape(12.dp)
+    ) {
         Text("Add", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
     }
 }
-
-/*
-@Composable
-fun QuickAddButton(text: String, onClick: () -> Unit) {
-    OutlinedButton(onClick = onClick, modifier = Modifier.height(56.dp), shape = RoundedCornerShape(12.dp)) {
-        Text(text, fontWeight = FontWeight.Medium)
-    }
-}
-*/
 
 
 @Composable
 fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
     Text(
-        "Quick Add", 
-        style = MaterialTheme.typography.titleLarge, 
+        "Quick Add",
+        style = MaterialTheme.typography.titleLarge,
         fontWeight = FontWeight.Bold
     )
     Spacer(modifier = Modifier.height(16.dp))
-    
+
     // Row 1
     Row(
-        modifier = Modifier.fillMaxWidth(), 
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         QuickAddButton(
@@ -194,12 +215,12 @@ fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
             onClick = { viewModel.addSugarEntry("Fruit", 10.0, false); nav.popBackStack() }
         )
     }
-    
+
     Spacer(modifier = Modifier.height(12.dp))
-    
+
     // Row 2
     Row(
-        modifier = Modifier.fillMaxWidth(), 
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         QuickAddButton(
@@ -219,9 +240,9 @@ fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
 
 @Composable
 fun QuickAddButton(
-    label: String, 
-    amount: String, 
-    modifier: Modifier = Modifier, 
+    label: String,
+    amount: String,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Card(
@@ -229,7 +250,7 @@ fun QuickAddButton(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             // Matches the light blue in the image (from your Color.kt)
-            containerColor = CardBackgroundBlue 
+            containerColor = CardBackgroundBlue
         ),
         modifier = modifier.height(100.dp) // Fixed height to match the boxy look
     ) {

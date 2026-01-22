@@ -22,6 +22,10 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.nomoosugar.NoMooSugarApplication
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.ui.platform.LocalFocusManager
 
 @Composable
 fun EditScreen(nav: NavController, entryId: Long) {
@@ -44,6 +48,9 @@ fun EditScreen(nav: NavController, entryId: Long) {
 
     val showDiscardDialog = uiState.showDiscardDialog
     val showDeleteDialog = uiState.showDeleteDialog
+
+    // Obtain FocusManager for keyboard actions
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier
@@ -72,7 +79,8 @@ fun EditScreen(nav: NavController, entryId: Long) {
                 onValueChange = viewModel::onLabelChange,
                 label = { Text("Name") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -82,7 +90,11 @@ fun EditScreen(nav: NavController, entryId: Long) {
                 onValueChange = viewModel::onAmountChange,
                 label = { Text("Sugar (g)") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    focusManager.clearFocus()
+                })
             )
 
             Spacer(modifier = Modifier.height(24.dp))
