@@ -32,8 +32,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 @Composable
 fun AddScreen(nav: NavController) {
     val viewModel: AddViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    var label by remember { mutableStateOf("Food") }
-    var grams by remember { mutableStateOf("0") }
+    var label by remember { mutableStateOf("") }
+    var grams by remember { mutableStateOf("") }
     var searchQuery by remember { mutableStateOf("") }
     val searchResults by viewModel.searchResults.collectAsState()
 
@@ -46,15 +46,15 @@ fun AddScreen(nav: NavController) {
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
-        QuickAddSection(viewModel, nav)
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+        Text("Search", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
         SearchFoodSection(searchQuery, onQueryChange = { searchQuery = it }, searchResults, onSelect = {
             label = it.name
             grams = it.sugarAmount.toString()
             searchQuery = ""
         })
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         
         // Pass the onAddClick lambda directly
         CustomEntrySection(label, grams, onLabelChange = { label = it }, onGramsChange = { grams = it }) {
@@ -66,6 +66,8 @@ fun AddScreen(nav: NavController) {
                 nav.popBackStack()
             }
         }
+        Spacer(modifier = Modifier.height(12.dp))
+        QuickAddSection(viewModel, nav)
     }
 }
 
@@ -150,6 +152,7 @@ fun CustomEntrySection(
         value = label,
         onValueChange = onLabelChange,
         label = { Text("Food Name") }, // Changed label text slightly for clarity
+        placeholder = { Text("e.g., Apple, Yogurt") },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         // CHANGED: Action is now Next (moves to sugar amount)
@@ -163,6 +166,7 @@ fun CustomEntrySection(
         value = grams,
         onValueChange = onGramsChange,
         label = { Text("Sugar (g)") },
+        placeholder = { Text("e.g., 10, 25") },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         // CHANGED: Action is now Done (submits form)
