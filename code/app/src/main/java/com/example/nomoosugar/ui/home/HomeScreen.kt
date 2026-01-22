@@ -30,6 +30,7 @@ import com.example.nomoosugar.ui.theme.ProgressBaseGray
 import com.example.nomoosugar.ui.theme.ProgressBlue
 import com.example.nomoosugar.ui.theme.ProgressTrackBlend
 import com.example.nomoosugar.ui.theme.HomeTitleBlue
+import com.example.nomoosugar.ui.theme.Orange75 // Added import for Orange75
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +47,27 @@ fun HomeScreen(nav: NavController) {
 
     val progress = if (dailyGoal > 0) (todayTotal / dailyGoal).coerceAtMost(1f) else 0f
     val isOverLimit = todayTotal > dailyGoal
-    val progressColor = if (isOverLimit) Color(0xFFD32F2F) else HomeTitleBlue
+    // Modified progressColor logic
+    val progressColor = when {
+        isOverLimit -> Color(0xFFD32F2F) // Red if over 100%
+        todayTotal / dailyGoal >= 0.75f -> Orange75 // Orange if over 75%
+        else -> HomeTitleBlue // Blue otherwise
+    }
+
+    // New strokeWidth logic for gradual increase
+    val baseStrokeWidth = 20.dp
+    val maxOverLimitStrokeWidth = 28.dp // Maximum thickness when over limit (at 200%)
+
+    val currentStrokeWidth = when {
+        todayTotal / dailyGoal <= 1f -> baseStrokeWidth // Default thickness if not over limit
+        todayTotal / dailyGoal > 2f -> maxOverLimitStrokeWidth // Cap at max thickness if very far over limit
+        else -> { // Gradually increase between 100% and 200%
+            // Calculate a ratio from 0f to 1f for the "over limit" range (100% to 200%)
+            val overLimitRatio = (todayTotal / dailyGoal - 1f).coerceIn(0f, 1f)
+            // Interpolate the stroke width
+            baseStrokeWidth + (maxOverLimitStrokeWidth - baseStrokeWidth) * overLimitRatio
+        }
+    }
 
     Scaffold(
         floatingActionButton = {
@@ -75,7 +96,7 @@ fun HomeScreen(nav: NavController) {
                 CircularProgressIndicator(
                     progress = { progress },
                     modifier = Modifier.fillMaxSize(0.9f),
-                    strokeWidth = 20.dp,
+                    strokeWidth = currentStrokeWidth, // Use dynamic strokeWidth
                     strokeCap = StrokeCap.Round,
                     color = progressColor,
                     trackColor = ProgressTrackBlend
@@ -105,15 +126,15 @@ fun HomeScreen(nav: NavController) {
                 color = if (isOverLimit) Color(0xFFD32F2F) else AppBlack
             )
 
-            if (isOverLimit) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Over limit!",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFFD32F2F),
-                    fontWeight = FontWeight.Medium
-                )
-            }
+            // if (isOverLimit) {
+            //     Spacer(modifier = Modifier.height(4.dp))
+            //     Text(
+            //         text = "Over limit!",
+            //         style = MaterialTheme.typography.bodySmall,
+            //         color = Color(0xFFD32F2F),
+            //         fontWeight = FontWeight.Medium
+            //     )
+            // }
 
             Spacer(modifier = Modifier.height(32.dp))
 
