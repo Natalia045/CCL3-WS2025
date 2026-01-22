@@ -67,6 +67,11 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import com.example.nomoosugar.ui.theme.CloseButtonLightBlueOpacity
 import com.example.nomoosugar.ui.theme.HomeTitleBlue
 import com.example.nomoosugar.ui.theme.CardBackgroundBlue
+import com.example.nomoosugar.ui.theme.CloseButtonLightModeTint
+import com.example.nomoosugar.ui.theme.FabBlue
+import com.example.nomoosugar.ui.theme.NavBarGray
+import com.example.nomoosugar.ui.theme.AppBlack
+import androidx.compose.ui.graphics.Color // Import Color for Color.White
 
 // --- 1. The ViewModel ---
 // This handles the random timer and picking the random message
@@ -190,22 +195,29 @@ fun NoMooSugarNavigation(
                 actions = {
                     when {
                         currentRoute == Routes.Add.route -> {
-                            IconButton(onClick = { navController.popBackStack() },
-                                modifier = Modifier.background(CloseButtonLightBlueOpacity, CircleShape)
+                            IconButton(
+                                onClick = { navController.popBackStack() },
+                                modifier = Modifier
+                                    .padding(end = 8.dp) // Added padding
+                                    .background(
+                                        color = if (isSystemInDarkTheme()) Color(0xFF606060) else CloseButtonLightModeTint, // Dark gray background in dark mode
+                                        shape = CircleShape
+                                    )
                             ) {
-                                Icon(Icons.Filled.Close, "Close", tint = HomeTitleBlue)
+                                Icon(Icons.Filled.Close, "Close", tint = if (isSystemInDarkTheme()) Color.White else FabBlue) // White tint in dark mode
                             }
                         }
                         currentRoute?.startsWith("edit/") == true -> {
                             IconButton(
-                                onClick = {
-                                    navController.currentBackStackEntry
-                                        ?.savedStateHandle
-                                        ?.set("requestDiscard", true)
-                                },
-                                modifier = Modifier.background(CloseButtonLightBlueOpacity, CircleShape)
+                                onClick = { navController.currentBackStackEntry?.savedStateHandle?.set("requestDiscard", true) },
+                                modifier = Modifier
+                                    .padding(end = 8.dp) // Added padding
+                                    .background(
+                                        color = if (isSystemInDarkTheme()) Color(0xFF606060) else CloseButtonLightModeTint, // Dark gray background in dark mode
+                                        shape = CircleShape
+                                    )
                             ) {
-                                Icon(Icons.Filled.Close, "Close", tint = HomeTitleBlue)
+                                Icon(Icons.Filled.Close, "Close", tint = if (isSystemInDarkTheme()) Color.White else FabBlue) // White tint in dark mode
                             }
                         }
                     }

@@ -31,6 +31,7 @@ import com.example.nomoosugar.ui.theme.ProgressBlue
 import com.example.nomoosugar.ui.theme.ProgressTrackBlend
 import com.example.nomoosugar.ui.theme.HomeTitleBlue
 import com.example.nomoosugar.ui.theme.Orange75 // Added import for Orange75
+import androidx.compose.foundation.isSystemInDarkTheme // Added import
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,9 +74,9 @@ fun HomeScreen(nav: NavController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { nav.navigate("add") },
-                containerColor = HomeTitleBlue
+                containerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.primary else HomeTitleBlue
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
+                Icon(Icons.Default.Add, contentDescription = "Add", tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else Color.White)
             }
         }
     ) { paddingValues ->
@@ -164,7 +165,7 @@ fun HomeScreen(nav: NavController) {
                                 .fillMaxWidth()
                                 .clickable { nav.navigate("edit/${item.id}") },
                             colors = CardDefaults.cardColors(
-                                containerColor = CardBackgroundBlue
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant
                             )
                         ) {
                             Row(
@@ -177,13 +178,12 @@ fun HomeScreen(nav: NavController) {
                                 Text(
                                     text = item.label,
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = AppBlack
+                                    color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onSurface else AppBlack
                                 )
                                 Text(
                                     text = "${item.grams.toInt()} g",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Medium,
-                                    color = AppBlack
+                                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                                    color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onSurface else AppBlack
                                 )
                             }
                         }

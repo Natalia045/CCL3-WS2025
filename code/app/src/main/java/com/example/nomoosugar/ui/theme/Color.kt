@@ -21,4 +21,5 @@ val ProgressTrackBlend = Color(0xFFE0E6F0)
 val CloseButtonBackgroundGray = Color(0x4D000000)
 val CloseButtonLightBlueOpacity = Color(0x806E93CF)
 val NavBarDarkGray = Color(0xFF212121)
-val Orange75 = Color(0xFFFF9800) // Added Orange color
+val Orange75 = Color(0xFFFF9800)
+val CloseButtonLightModeTint = Color(0xFFABC3EA)
