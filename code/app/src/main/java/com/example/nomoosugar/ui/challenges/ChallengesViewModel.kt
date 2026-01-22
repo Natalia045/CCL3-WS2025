@@ -6,8 +6,11 @@ import com.example.nomoosugar.db.ChallengeEntity
 import com.example.nomoosugar.db.UserProfileEntity
 import com.example.nomoosugar.repository.ChallengeRepository
 import com.example.nomoosugar.repository.UserProfileRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
@@ -26,6 +29,13 @@ class ChallengesViewModel(
     private val userProfileRepository: UserProfileRepository
 ) : ViewModel() {
 
+    private val _challengeCompleted = MutableStateFlow<ChallengeEntity?>(null)
+    val challengeCompleted: StateFlow<ChallengeEntity?> = _challengeCompleted.asStateFlow()
+
+    fun dismissChallengeCompletedDialog() {
+        _challengeCompleted.value = null
+    }
+
     // Exposes the UI state with the list of challenges to the ChallengesScreen.
     val uiState: StateFlow<ChallengesUiState> = combine(
         challengeRepository.getAllChallenges(),
@@ -41,6 +51,14 @@ class ChallengesViewModel(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = ChallengesUiState()
     )
+
+    init {
+        viewModelScope.launch {
+            challengeRepository.challengeCompleted.collectLatest {
+                _challengeCompleted.value = it
+            }
+        }
+    }
 
     fun activateChallenge(id: Int) {
         viewModelScope.launch {
@@ -67,6 +85,7 @@ class ChallengesViewModel(
             challenge?.let {
                 val updatedChallenge = it.copy(isCompleted = true, currentCount = progress)
                 challengeRepository.updateChallenge(updatedChallenge)
+                _challengeCompleted.value = updatedChallenge
             }
         }
     }
