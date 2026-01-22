@@ -30,6 +30,9 @@ import com.example.nomoosugar.ui.theme.ProgressBaseGray
 import com.example.nomoosugar.ui.theme.ProgressBlue
 import com.example.nomoosugar.ui.theme.ProgressTrackBlend
 import com.example.nomoosugar.ui.theme.HomeTitleBlue
+import com.example.nomoosugar.ui.theme.Orange75 // Added import for Orange75
+import androidx.compose.foundation.isSystemInDarkTheme // Added import
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,15 +48,35 @@ fun HomeScreen(nav: NavController) {
 
     val progress = if (dailyGoal > 0) (todayTotal / dailyGoal).coerceAtMost(1f) else 0f
     val isOverLimit = todayTotal > dailyGoal
-    val progressColor = if (isOverLimit) Color(0xFFD32F2F) else HomeTitleBlue
+    // Modified progressColor logic
+    val progressColor = when {
+        isOverLimit -> Color(0xFFD32F2F) // Red if over 100%
+        todayTotal / dailyGoal >= 0.75f -> Orange75 // Orange if over 75%
+        else -> HomeTitleBlue // Blue otherwise
+    }
+
+    // New strokeWidth logic for gradual increase
+    val baseStrokeWidth = 20.dp
+    val maxOverLimitStrokeWidth = 28.dp // Maximum thickness when over limit (at 200%)
+
+    val currentStrokeWidth = when {
+        todayTotal / dailyGoal <= 1f -> baseStrokeWidth // Default thickness if not over limit
+        todayTotal / dailyGoal > 2f -> maxOverLimitStrokeWidth // Cap at max thickness if very far over limit
+        else -> { // Gradually increase between 100% and 200%
+            // Calculate a ratio from 0f to 1f for the "over limit" range (100% to 200%)
+            val overLimitRatio = (todayTotal / dailyGoal - 1f).coerceIn(0f, 1f)
+            // Interpolate the stroke width
+            baseStrokeWidth + (maxOverLimitStrokeWidth - baseStrokeWidth) * overLimitRatio
+        }
+    }
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { nav.navigate("add") },
-                containerColor = HomeTitleBlue
+                containerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.primary else HomeTitleBlue
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
+                Icon(Icons.Default.Add, contentDescription = "Add", tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else Color.White)
             }
         }
     ) { paddingValues ->
@@ -74,7 +97,7 @@ fun HomeScreen(nav: NavController) {
                 CircularProgressIndicator(
                     progress = { progress },
                     modifier = Modifier.fillMaxSize(0.9f),
-                    strokeWidth = 20.dp,
+                    strokeWidth = currentStrokeWidth, // Use dynamic strokeWidth
                     strokeCap = StrokeCap.Round,
                     color = progressColor,
                     trackColor = ProgressTrackBlend
@@ -97,23 +120,22 @@ fun HomeScreen(nav: NavController) {
             }
 
             Text(
-
                 // Use dailyGoal from uiState
-                text = "${todayTotal.toInt()} g / ${dailyGoal.toInt()}g",
+                text = "${todayTotal.toInt()}g / ${dailyGoal.toInt()}g",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = if (isOverLimit) Color(0xFFD32F2F) else AppBlack
             )
 
-            if (isOverLimit) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Over limit!",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFFD32F2F),
-                    fontWeight = FontWeight.Medium
-                )
-            }
+            // if (isOverLimit) {
+            //     Spacer(modifier = Modifier.height(4.dp))
+            //     Text(
+            //         text = "Over limit!",
+            //         style = MaterialTheme.typography.bodySmall,
+            //         color = Color(0xFFD32F2F),
+            //         fontWeight = FontWeight.Medium
+            //     )
+            // }
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -143,7 +165,7 @@ fun HomeScreen(nav: NavController) {
                                 .fillMaxWidth()
                                 .clickable { nav.navigate("edit/${item.id}") },
                             colors = CardDefaults.cardColors(
-                                containerColor = CardBackgroundBlue
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant
                             )
                         ) {
                             Row(
@@ -156,13 +178,12 @@ fun HomeScreen(nav: NavController) {
                                 Text(
                                     text = item.label,
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = AppBlack
+                                    color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onSurface else AppBlack
                                 )
                                 Text(
                                     text = "${item.grams.toInt()} g",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Medium,
-                                    color = AppBlack
+                                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                                    color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onSurface else AppBlack
                                 )
                             }
                         }
