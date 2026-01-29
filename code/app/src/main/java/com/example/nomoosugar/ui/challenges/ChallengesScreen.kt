@@ -21,7 +21,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -43,9 +42,6 @@ fun ChallengesScreen(
     val uiState by viewModel.uiState.collectAsState()
     val allChallenges = uiState.allChallenges
     val completedChallenge by viewModel.challengeCompleted.collectAsState()
-
-
-    // Filter challenges based on isActive and isCompleted
     val active = allChallenges.filter { it.isActive && !it.isCompleted }
     val available = allChallenges.filter { !it.isActive && !it.isCompleted }
     val completed = allChallenges.filter { it.isCompleted }
@@ -107,7 +103,7 @@ fun ChallengesScreen(
         } else {
             available.forEach { challenge ->
                 AvailableChallengeCard(challenge) {
-                    viewModel.activateChallenge(challenge.id) // Call ViewModel's activate function
+                    viewModel.activateChallenge(challenge.id)
                 }
                 Spacer(modifier = Modifier.height(12.dp))
             }

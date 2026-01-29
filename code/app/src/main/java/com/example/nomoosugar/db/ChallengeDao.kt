@@ -1,12 +1,10 @@
 package com.example.nomoosugar.db
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.nomoosugar.db.ChallengeEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,9 +19,6 @@ interface ChallengeDao {
     @Update
     suspend fun updateChallenge(challenge: ChallengeEntity)
 
-    // Activates a challenge by setting isActive to true
-
-    // for the initial setup of the challenges from assets JSON file
     @Query("SELECT COUNT(*) FROM challenges")
     suspend fun getCount(): Int
 

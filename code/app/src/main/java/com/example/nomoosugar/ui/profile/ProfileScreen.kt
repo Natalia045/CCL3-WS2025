@@ -3,12 +3,10 @@ package com.example.nomoosugar.ui.profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,7 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -75,27 +72,26 @@ fun ProfileScreen() {
 
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // Add a subtle shadow
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp), // Increase padding
-                horizontalAlignment = Alignment.CenterHorizontally // Center all children
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = "Daily Sugar Goal",
-                    style = MaterialTheme.typography.titleLarge, // Make title larger
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = Modifier.height(24.dp)) // Increased spacing
+                Spacer(modifier = Modifier.height(24.dp))
 
                 var goalText by remember { mutableStateOf(uiState.dailySugarLimit.toInt().toString()) }
                 val valueRange = 10f..200f
 
                 LaunchedEffect(uiState.dailySugarLimit) {
-                    // Update text field only if the underlying value changes
                     if (goalText.toFloatOrNull() != uiState.dailySugarLimit) {
                         goalText = uiState.dailySugarLimit.toInt().toString()
                     }
@@ -118,7 +114,7 @@ fun ProfileScreen() {
                             }
                         },
                         modifier = Modifier.width(120.dp),
-                        textStyle = MaterialTheme.typography.headlineLarge.copy(textAlign = TextAlign.Center), // Center text and make it larger
+                        textStyle = MaterialTheme.typography.headlineLarge.copy(textAlign = TextAlign.Center),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
                         shape = RoundedCornerShape(16.dp),
@@ -137,7 +133,7 @@ fun ProfileScreen() {
                         viewModel.updateDailySugarLimit(newValue)
                     },
                     valueRange = valueRange,
-                    steps = ((valueRange.endInclusive - valueRange.start) / 5f).toInt() - 1, // A step every 5g
+                    steps = ((valueRange.endInclusive - valueRange.start) / 5f).toInt() - 1,
                     modifier = Modifier.fillMaxWidth()
                 )
 

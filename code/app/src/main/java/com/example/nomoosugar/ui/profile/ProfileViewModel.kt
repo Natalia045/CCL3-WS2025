@@ -70,7 +70,7 @@ class ProfileViewModel(
                     .build()
                 workManager.enqueueUniquePeriodicWork(
                     workName,
-                    ExistingPeriodicWorkPolicy.REPLACE, // Ensure new worker replaces old one
+                    ExistingPeriodicWorkPolicy.REPLACE,
                     reminderRequest
                 )
             } else {

@@ -55,7 +55,6 @@ class NoMooSugarApplication : Application() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            // --- Load initial foods ---
             if (database.foodDao().getCount() == 0) {
                 val jsonString = assets.open("foods.json").bufferedReader().use { it.readText() }
                 val jsonArray = JSONArray(jsonString)
@@ -67,7 +66,6 @@ class NoMooSugarApplication : Application() {
                 database.foodDao().insertAll(foods)
             }
 
-            // --- Load initial challenges ---
             if (database.challengeDao().getCount() == 0) {
                 val jsonString = assets.open("challenges.json").bufferedReader().use { it.readText() }
                 val jsonArray = JSONArray(jsonString)
@@ -84,7 +82,6 @@ class NoMooSugarApplication : Application() {
                     )
                 }
 
-                // ✅ CALL THE EXISTING FUNCTION
                 challengeRepository.insertChallenges(challenges)
             }
         }

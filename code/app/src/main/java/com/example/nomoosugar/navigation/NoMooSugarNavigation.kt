@@ -64,18 +64,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.isSystemInDarkTheme
-import com.example.nomoosugar.ui.theme.CloseButtonLightBlueOpacity
-import com.example.nomoosugar.ui.theme.HomeTitleBlue
 import com.example.nomoosugar.ui.theme.CardBackgroundBlue
 import com.example.nomoosugar.ui.theme.CloseButtonLightModeTint
 import com.example.nomoosugar.ui.theme.FabBlue
-import com.example.nomoosugar.ui.theme.NavBarGray
-import com.example.nomoosugar.ui.theme.AppBlack
-import androidx.compose.ui.graphics.Color // Import Color for Color.White
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Column
@@ -96,14 +91,11 @@ enum class Routes(val route: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoMooSugarNavigation(
-    // Inject the ViewModel here
     viewModel: NoMooSugarNavigationViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
-    // Observe the Cow State
     val cowState by viewModel.cowState.collectAsState()
 
     Scaffold(
@@ -111,7 +103,6 @@ fun NoMooSugarNavigation(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    // Logic: If speaking, show bubble. If not, show Route Title.
                     if (cowState.isSpeaking) {
                         SpeechBubble(text = cowState.message)
                     } else {
@@ -123,18 +114,15 @@ fun NoMooSugarNavigation(
                     }
                 },
                 navigationIcon = {
-                    // We animate based on the boolean state (isSpeaking)
                     AnimatedContent(
                         targetState = cowState.isSpeaking,
                         transitionSpec = {
-                            // This creates a "Pop" effect: Scale In + Fade In
                             (scaleIn() + fadeIn(animationSpec = tween(200))).togetherWith(
                                 scaleOut() + fadeOut(animationSpec = tween(200))
                             )
                         },
                         label = "CowAnimation"
                     ) { isSpeaking ->
-                        // This lambda provides the "targetState" boolean to decide what to render
                         val iconRes = if (isSpeaking) {
                             R.drawable.cow_speaking
                         } else {
@@ -144,7 +132,6 @@ fun NoMooSugarNavigation(
                         Image(
                             painter = painterResource(id = iconRes),
                             contentDescription = "Cow Icon",
-                            // Optional: You can make the speaking cow slightly larger if needed
                             modifier = Modifier
                                 .padding(4.dp)
                                 .size(48.dp)
@@ -157,26 +144,26 @@ fun NoMooSugarNavigation(
                             IconButton(
                                 onClick = { navController.popBackStack() },
                                 modifier = Modifier
-                                    .padding(end = 8.dp) // Added padding
+                                    .padding(end = 8.dp)
                                     .background(
-                                        color = if (isSystemInDarkTheme()) Color(0xFF606060) else CloseButtonLightModeTint, // Dark gray background in dark mode
+                                        color = if (isSystemInDarkTheme()) Color(0xFF606060) else CloseButtonLightModeTint,
                                         shape = CircleShape
                                     )
                             ) {
-                                Icon(Icons.Filled.Close, "Close", tint = if (isSystemInDarkTheme()) Color.White else FabBlue) // White tint in dark mode
+                                Icon(Icons.Filled.Close, "Close", tint = if (isSystemInDarkTheme()) Color.White else FabBlue)
                             }
                         }
                         currentRoute?.startsWith("edit/") == true -> {
                             IconButton(
                                 onClick = { navController.currentBackStackEntry?.savedStateHandle?.set("requestDiscard", true) },
                                 modifier = Modifier
-                                    .padding(end = 8.dp) // Added padding
+                                    .padding(end = 8.dp)
                                     .background(
-                                        color = if (isSystemInDarkTheme()) Color(0xFF606060) else CloseButtonLightModeTint, // Dark gray background in dark mode
+                                        color = if (isSystemInDarkTheme()) Color(0xFF606060) else CloseButtonLightModeTint,
                                         shape = CircleShape
                                     )
                             ) {
-                                Icon(Icons.Filled.Close, "Close", tint = if (isSystemInDarkTheme()) Color.White else FabBlue) // White tint in dark mode
+                                Icon(Icons.Filled.Close, "Close", tint = if (isSystemInDarkTheme()) Color.White else FabBlue)
                             }
                         }
                     }
@@ -230,11 +217,10 @@ fun SpeechBubble(text: String) {
         shadowElevation = 4.dp
     ) {
         Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            // 1. Try to resize based on length
             val fontSize = when {
-                text.length > 25 -> 13.sp  // Very long text
-                text.length > 15 -> 16.sp  // Medium text
-                else -> 22.sp              // Short & punchy
+                text.length > 25 -> 13.sp
+                text.length > 15 -> 16.sp
+                else -> 22.sp
             }
 
             Text(
@@ -242,11 +228,9 @@ fun SpeechBubble(text: String) {
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontSize = fontSize,
                 fontWeight = FontWeight.ExtraBold,
-                
-                // 2. The "Safety Net" for the worst case
                 maxLines = 1,
                 softWrap = false,
-                overflow = TextOverflow.Ellipsis // "What did you eat tod..."
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

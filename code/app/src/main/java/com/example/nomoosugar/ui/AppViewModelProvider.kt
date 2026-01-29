@@ -1,6 +1,5 @@
 package com.example.nomoosugar.ui
 
-import android.app.Application
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -9,7 +8,6 @@ import com.example.nomoosugar.ui.add.AddViewModel
 import com.example.nomoosugar.ui.home.HomeViewModel
 import com.example.nomoosugar.ui.challenges.ChallengesViewModel
 import com.example.nomoosugar.ui.profile.ProfileViewModel
-import com.example.nomoosugar.repository.ChallengeRepository // Import ChallengeRepository
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
@@ -23,7 +21,6 @@ object AppViewModelProvider {
         }
         initializer {
             val application = this[APPLICATION_KEY] as NoMooSugarApplication
-            // Provide ChallengeRepository to ChallengesViewModel
             ChallengesViewModel(application.challengeRepository, application.userProfileRepository)
         }
         initializer {

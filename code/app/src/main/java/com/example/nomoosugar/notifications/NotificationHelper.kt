@@ -11,8 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger
 object NotificationHelper {
 
     const val CHANNEL_ID = "sugar_reminder"
-
-    // Use an atomic counter for notification IDs to avoid collision/overflow
     private val notificationId = AtomicInteger(0)
 
     fun createChannel(context: Context) {
@@ -33,7 +31,7 @@ object NotificationHelper {
 
     fun showReminder(context: Context, title: String, message: String) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification) // Ensure this icon exists
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

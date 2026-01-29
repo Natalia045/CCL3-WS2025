@@ -12,20 +12,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
-
-// This data class holds only the challenges needed for the UI.
 data class ChallengesUiState(
-    val allChallenges: List<ChallengeEntity> = emptyList(), // The full list of challenges
+    val allChallenges: List<ChallengeEntity> = emptyList(),
     val userPoints: Int = 0
 )
 
 class ChallengesViewModel(
-    private val challengeRepository: ChallengeRepository, // Injecting the ChallengeRepository
+    private val challengeRepository: ChallengeRepository,
     private val userProfileRepository: UserProfileRepository
 ) : ViewModel() {
 
@@ -35,8 +31,6 @@ class ChallengesViewModel(
     fun dismissChallengeCompletedDialog() {
         _challengeCompleted.value = null
     }
-
-    // Exposes the UI state with the list of challenges to the ChallengesScreen.
     val uiState: StateFlow<ChallengesUiState> = combine(
         challengeRepository.getAllChallenges(),
         userProfileRepository.getUserProfile()
@@ -67,7 +61,7 @@ class ChallengesViewModel(
             challengeToActivate?.let {
                 val updatedChallenge = it.copy(
                     isActive = true,
-                    currentCount = 0,   // ✅ reset to 0
+                    currentCount = 0,
                     isCompleted = false,
                     lastUpdated = 0L
                 )

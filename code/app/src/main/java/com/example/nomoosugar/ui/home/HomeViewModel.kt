@@ -12,12 +12,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-// --- Merged Imports ---
 import com.example.nomoosugar.R
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-// Data class to represent the UI state for the HomeScreen
+
 data class HomeUiState(
     val dailySugarLimit: Float = 50.0f,
     val todayTotalSugar: Float = 0f,
@@ -51,11 +50,8 @@ class HomeViewModel(
     ) { userProfile, totalSugar, entriesList ->
         val currentProfile = userProfile ?: UserProfileEntity()
         val sugarLimit = currentProfile.dailySugarLimit.toFloat()
-
-        // Safety check for null sugar (from challengesnew)
         val safeTotalSugar = (totalSugar ?: 0.0).toFloat()
 
-        // Image Logic (from HEAD)
         val imageResId = when {
             safeTotalSugar == 0f && sugarLimit == 0f -> R.drawable.cow_white_happy
             safeTotalSugar == 0f -> R.drawable.cow_white_normal

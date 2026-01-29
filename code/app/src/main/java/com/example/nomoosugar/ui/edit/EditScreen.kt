@@ -48,8 +48,6 @@ fun EditScreen(nav: NavController, entryId: Long) {
 
     val showDiscardDialog = uiState.showDiscardDialog
     val showDeleteDialog = uiState.showDeleteDialog
-
-    // Obtain FocusManager for keyboard actions
     val focusManager = LocalFocusManager.current
 
     Box(

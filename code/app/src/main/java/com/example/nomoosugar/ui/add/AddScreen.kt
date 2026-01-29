@@ -55,12 +55,10 @@ fun AddScreen(nav: NavController) {
             searchQuery = ""
         })
         Spacer(modifier = Modifier.height(24.dp))
-        
-        // Pass the onAddClick lambda directly
+
         CustomEntrySection(label, grams, onLabelChange = { label = it }, onGramsChange = { grams = it }) {
             val gramsValue = grams.toDoubleOrNull()
-            
-            // CHANGED: Logic now checks if gramsValue is not null and >= 0 (allows 0g)
+
             if (gramsValue != null && gramsValue >= 0) {
                 viewModel.addSugarEntry(label.ifEmpty { "Food" }, gramsValue, isManual = true)
                 nav.popBackStack()
@@ -70,24 +68,6 @@ fun AddScreen(nav: NavController) {
         QuickAddSection(viewModel, nav)
     }
 }
-
-/*
-@Composable
-fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
-    Text("Quick Add", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(16.dp))
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        QuickAddButton("Coffee 5g") { viewModel.addSugarEntry("Coffee", 5.0, false); nav.popBackStack() }
-        QuickAddButton("Fruit 10g") { viewModel.addSugarEntry("Fruit", 10.0, false); nav.popBackStack() }
-    }
-    Spacer(modifier = Modifier.height(12.dp))
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        QuickAddButton("Snack 15g") { viewModel.addSugarEntry("Snack", 15.0, false); nav.popBackStack() }
-        QuickAddButton("Soda 35g") { viewModel.addSugarEntry("Soda", 35.0, false); nav.popBackStack() }
-    }
-}
-*/
-
 @Composable
 fun SearchFoodSection(
     searchQuery: String,
@@ -147,32 +127,27 @@ fun CustomEntrySection(
 
     val focusManager = LocalFocusManager.current
 
-    // CHANGED: Label (Name) is now first
     OutlinedTextField(
         value = label,
         onValueChange = onLabelChange,
-        label = { Text("Food Name") }, // Changed label text slightly for clarity
+        label = { Text("Food Name") },
         placeholder = { Text("e.g., Apple, Yogurt") },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
-        // CHANGED: Action is now Next (moves to sugar amount)
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next) 
     )
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    // CHANGED: Sugar Amount is now second
     OutlinedTextField(
         value = grams,
         onValueChange = onGramsChange,
         label = { Text("Sugar (g)") },
         placeholder = { Text("e.g., 10, 25") },
         modifier = Modifier.fillMaxWidth(),
-        singleLine = true,
-        // CHANGED: Action is now Done (submits form)
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
-            keyboardType = androidx.compose.ui.text.input.KeyboardType.Number // Added Number type for better UX
+            keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
         ), 
         keyboardActions = KeyboardActions(onDone = {
             focusManager.clearFocus()
@@ -200,7 +175,6 @@ fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
     )
     Spacer(modifier = Modifier.height(8.dp))
 
-    // Row 1
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -221,7 +195,6 @@ fun QuickAddSection(viewModel: AddViewModel, nav: NavController) {
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    // Row 2
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -252,26 +225,23 @@ fun QuickAddButton(
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            // Matches the light blue in the image (from your Color.kt)
             containerColor = CardBackgroundBlue
         ),
-        modifier = modifier.height(100.dp) // Fixed height to match the boxy look
+        modifier = modifier.height(100.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(12.dp)
         ) {
-            // Top Left Label (Blue)
             Text(
                 text = label,
                 style = MaterialTheme.typography.titleMedium,
-                color = HomeTitleBlue, // Using the specific blue from theme
+                color = HomeTitleBlue,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.align(Alignment.TopStart)
             )
 
-            // Bottom Right Amount (Black, Large)
             Text(
                 text = amount,
                 style = MaterialTheme.typography.headlineMedium.copy(fontSize = 32.sp),

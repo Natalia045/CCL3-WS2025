@@ -1,7 +1,6 @@
 package com.example.nomoosugar.ui.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -22,50 +21,38 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.nomoosugar.ui.AppViewModelProvider
-import com.example.nomoosugar.R
 import com.example.nomoosugar.ui.theme.AppBlack
-import com.example.nomoosugar.ui.theme.CardBackgroundBlue
-import com.example.nomoosugar.ui.theme.FabBlue
-import com.example.nomoosugar.ui.theme.ProgressBaseGray
-import com.example.nomoosugar.ui.theme.ProgressBlue
 import com.example.nomoosugar.ui.theme.ProgressTrackBlend
 import com.example.nomoosugar.ui.theme.HomeTitleBlue
-import com.example.nomoosugar.ui.theme.Orange75 // Added import for Orange75
-import androidx.compose.foundation.isSystemInDarkTheme // Added import
+import com.example.nomoosugar.ui.theme.Orange75
+import androidx.compose.foundation.isSystemInDarkTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(nav: NavController) {
     val viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    // 1. Observe the combined uiState
     val uiState by viewModel.uiState.collectAsState()
-
-    // 2. Access values directly from uiState
     val dailyGoal = uiState.dailySugarLimit
     val todayTotal = uiState.todayTotalSugar
     val todayEntries = uiState.todayEntries
 
     val progress = if (dailyGoal > 0) (todayTotal / dailyGoal).coerceAtMost(1f) else 0f
     val isOverLimit = todayTotal > dailyGoal
-    // Modified progressColor logic
     val progressColor = when {
-        isOverLimit -> Color(0xFFD32F2F) // Red if over 100%
-        todayTotal / dailyGoal >= 0.75f -> Orange75 // Orange if over 75%
-        else -> HomeTitleBlue // Blue otherwise
+        isOverLimit -> Color(0xFFD32F2F)
+        todayTotal / dailyGoal >= 0.75f -> Orange75
+        else -> HomeTitleBlue
     }
 
-    // New strokeWidth logic for gradual increase
     val baseStrokeWidth = 20.dp
-    val maxOverLimitStrokeWidth = 28.dp // Maximum thickness when over limit (at 200%)
+    val maxOverLimitStrokeWidth = 28.dp
 
     val currentStrokeWidth = when {
-        todayTotal / dailyGoal <= 1f -> baseStrokeWidth // Default thickness if not over limit
-        todayTotal / dailyGoal > 2f -> maxOverLimitStrokeWidth // Cap at max thickness if very far over limit
-        else -> { // Gradually increase between 100% and 200%
-            // Calculate a ratio from 0f to 1f for the "over limit" range (100% to 200%)
+        todayTotal / dailyGoal <= 1f -> baseStrokeWidth
+        todayTotal / dailyGoal > 2f -> maxOverLimitStrokeWidth
+        else -> {
             val overLimitRatio = (todayTotal / dailyGoal - 1f).coerceIn(0f, 1f)
-            // Interpolate the stroke width
             baseStrokeWidth + (maxOverLimitStrokeWidth - baseStrokeWidth) * overLimitRatio
         }
     }
@@ -97,7 +84,7 @@ fun HomeScreen(nav: NavController) {
                 CircularProgressIndicator(
                     progress = { progress },
                     modifier = Modifier.fillMaxSize(0.9f),
-                    strokeWidth = currentStrokeWidth, // Use dynamic strokeWidth
+                    strokeWidth = currentStrokeWidth,
                     strokeCap = StrokeCap.Round,
                     color = progressColor,
                     trackColor = ProgressTrackBlend
@@ -107,35 +94,22 @@ fun HomeScreen(nav: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    //Text("🐄", style = MaterialTheme.typography.displayMedium)
                     Image(
                         painter = painterResource(id = uiState.cowImageResId),
                         contentDescription = "Cow Status",
                         modifier = Modifier.size(240.dp)
                     )
-                    //Spacer(modifier = Modifier.height(8.dp))
-
 
                 }
             }
 
             Text(
-                // Use dailyGoal from uiState
                 text = "${todayTotal.toInt()}g / ${dailyGoal.toInt()}g",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = if (isOverLimit) Color(0xFFD32F2F) else AppBlack
             )
 
-            // if (isOverLimit) {
-            //     Spacer(modifier = Modifier.height(4.dp))
-            //     Text(
-            //         text = "Over limit!",
-            //         style = MaterialTheme.typography.bodySmall,
-            //         color = Color(0xFFD32F2F),
-            //         fontWeight = FontWeight.Medium
-            //     )
-            // }
 
             Spacer(modifier = Modifier.height(32.dp))
 

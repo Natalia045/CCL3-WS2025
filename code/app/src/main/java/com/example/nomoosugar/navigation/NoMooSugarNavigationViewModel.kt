@@ -11,11 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-// --- The ViewModel ---
-// This handles the random timer and picking the random message
 class NoMooSugarNavigationViewModel(private val challengeRepository: ChallengeRepository) : ViewModel() {
-
-    // Simple state holder
     data class CowState(
         val isSpeaking: Boolean = false,
         val message: String = "",
@@ -63,11 +59,9 @@ class NoMooSugarNavigationViewModel(private val challengeRepository: ChallengeRe
     private fun startCowLoop() {
         viewModelScope.launch {
             while (true) {
-                // 1. Wait for a random time (e.g., between 5 and 15 seconds)
                 val waitTime = Random.nextLong(5000, 15000)
                 delay(waitTime)
 
-                // 2. Start Speaking
                 _cowState.update {
                     it.copy(
                         isSpeaking = true,
@@ -75,10 +69,8 @@ class NoMooSugarNavigationViewModel(private val challengeRepository: ChallengeRe
                     )
                 }
 
-                // 3. Speak for 3 seconds
                 delay(3000)
 
-                // 4. Stop Speaking
                 _cowState.update { it.copy(isSpeaking = false) }
             }
         }

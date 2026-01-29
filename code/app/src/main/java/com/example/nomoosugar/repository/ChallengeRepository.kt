@@ -14,8 +14,6 @@ class ChallengeRepository(
 ) {
     private val _challengeCompleted = MutableStateFlow<ChallengeEntity?>(null)
     val challengeCompleted = _challengeCompleted.asStateFlow()
-
-    // Returns all challenges as a Flow for UI
     fun getAllChallenges() = dao.getAllChallenges()
 
     suspend fun insertChallenges(challenges: List<ChallengeEntity>) = dao.insertChallenges(challenges)
@@ -40,15 +38,11 @@ class ChallengeRepository(
             )
         )
     }
-
-    /** Award points safely by updating the UserProfile in DB */
     private suspend fun awardPoints(points: Int) {
         val profile = userProfileRepository.getUserProfile().firstOrNull() ?: UserProfileEntity()
         val updated = profile.copy(points = profile.points + points)
         userProfileRepository.insertUserProfile(updated)
     }
-
-    /** Manual entry challenge: Read the Label */
     suspend fun updateReadTheLabelChallenge() {
         val readLabel = dao.getChallengeByType(1) ?: return
         if (!readLabel.isActive) return
@@ -62,7 +56,6 @@ class ChallengeRepository(
         updateChallenge(readLabel.copy(currentCount = newCount, isCompleted = completed))
     }
 
-    /** Snack Smarter challenge: sugar <= 10g */
     suspend fun updateSnackSmarterChallenge(sugarAmount: Double) {
         val challenge = dao.getActiveChallenge(2) ?: return
         if (sugarAmount > 10) return
@@ -75,8 +68,6 @@ class ChallengeRepository(
         }
         updateChallenge(challenge.copy(currentCount = newCount, isCompleted = completed))
     }
-
-    /** Goal Seeker: set sugar goal */
     suspend fun updateGoalSeekerChallenge() {
         val challenge = dao.getActiveChallenge(4) ?: return
         if (challenge.isCompleted) return
@@ -85,7 +76,6 @@ class ChallengeRepository(
         updateChallenge(challenge.copy(currentCount = 1, isCompleted = true))
     }
 
-    /** Sugar streak (type 3) */
     suspend fun updateSugarStreakChallenge(logDate: LocalDate) {
         val challenge = dao.getActiveChallenge(3) ?: return
         if (challenge.isCompleted) return
@@ -112,7 +102,7 @@ class ChallengeRepository(
                     lastUpdated = today.toEpochDay()
                 ))
             }
-            lastUpdate == today -> {} // do nothing
+            lastUpdate == today -> {}
             else -> updateChallenge(challenge.copy(currentCount = 1, lastUpdated = today.toEpochDay()))
         }
     }
