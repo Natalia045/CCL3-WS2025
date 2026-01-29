@@ -22,11 +22,50 @@ body {
 
 
 header {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     color: white;
-    padding: 60px 20px 100px; 
+    padding: 30px 20px 60px; 
     position: relative;
     text-align: center;
+}
+
+.header-content {
+    max-width: 900px;
+    margin: auto;
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: center;
+    gap: 20px; 
+    position: relative;
+    z-index: 10;
+}
+
+.header-text h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 2.2rem; 
+    margin: 0;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+    line-height: 1.1;
+}
+
+.header-text p {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1rem; 
+    margin: 5px 0 0 0;
+    opacity: 0.95;
+    font-weight: 400;
+}
+
+.header-mascot {
+    font-size: 3.5rem;
+    animation: bounce 3s ease-in-out infinite;
+    cursor: pointer;
+    line-height: 1; 
+}
+
+.header-mascot:hover {
+    transform: scale(1.1) rotate(10deg);
 }
 
 .custom-shape-divider-bottom {
@@ -41,57 +80,29 @@ header {
 .custom-shape-divider-bottom svg {
     position: relative;
     display: block;
-    width: calc(130% + 1.3px);
-    height: 60px;
+    width: calc(100% + 1.3px);
+    height: 35px; 
 }
 
 .custom-shape-divider-bottom .shape-fill {
-    fill: #FFFFFF; 
-}
-
-.header-content {
-    max-width: 800px;
-    margin: auto;
-    display: flex;
-    flex-direction: column; 
-    align-items: center;
-    gap: 10px;
-    position: relative;
-    z-index: 10;
-}
-
-
-.header-text h1 {
-    font-family: 'Fredoka', sans-serif; 
-    font-size: 3.5rem;
-    margin: 0;
-    text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-}
-
-.header-text p {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 1.3rem;
-    opacity: 0.9;
-    font-weight: 400;
-}
-
-.header-mascot {
-    font-size: 5rem; 
-    animation: bounce 3s ease-in-out infinite;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.header-mascot:hover {
-    transform: scale(1.2) rotate(10deg);
+    fill: #FFFFFF;
 }
 
 @keyframes bounce {
-    0%, 100% {
-        transform: translateY(0);
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); } 
+}
+
+@media (max-width: 600px) {
+    .header-content {
+        justify-content: center; 
+        text-align: left;
     }
-    50% {
-        transform: translateY(-15px); 
+    .header-text h1 {
+        font-size: 1.8rem;
+    }
+    .header-mascot {
+        font-size: 2.5rem;
     }
 }
 
