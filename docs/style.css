@@ -12,14 +12,14 @@
 
 body {
     margin: 0;
-    font-family: "Arial", sans-serif;
+    font-family: Arial, sans-serif;
     background-color: var(--light-blue);
     color: var(--text);
 }
 
 header {
     background: linear-gradient(135deg, #3B7DD8, #6FA8FF);
-    padding: 20px;
+    padding: 30px 20px;
     text-align: center;
     color: white;
 }
@@ -29,15 +29,15 @@ nav {
     justify-content: center;
     gap: 20px;
     background-color: white;
-    padding: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    padding: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 nav a {
     text-decoration: none;
     color: var(--blue);
     font-weight: bold;
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 20px;
 }
 
@@ -47,14 +47,14 @@ nav a:hover {
 
 .container {
     max-width: 900px;
-    margin: 30px auto;
+    margin: 40px auto;
     background-color: var(--card);
     padding: 30px;
     border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
     color: var(--blue);
 }
 
@@ -62,25 +62,21 @@ h1, h2, h3 {
     margin-bottom: 30px;
 }
 
-.badge {
-    display: inline-block;
-    background-color: var(--light-blue);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 14px;
-    margin: 4px 0;
-}
-
 .button {
     display: inline-block;
     background-color: var(--blue);
     color: white;
-    padding: 12px 20px;
+    padding: 12px 22px;
     border-radius: 30px;
     text-decoration: none;
     font-weight: bold;
+    margin-top: 10px;
 }
 
 .button:hover {
     background-color: #2f66b5;
+}
+
+ul {
+    line-height: 1.8;
 }
